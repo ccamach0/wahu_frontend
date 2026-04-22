@@ -166,10 +166,6 @@ export default function Login() {
             </Link>
           </p>
         </div>
-
-        <div className="mt-4 p-3 bg-wahu-100 rounded-xl text-xs text-wahu-700 text-center">
-          Demo: <strong>ana@wahu.com</strong> / <strong>password123</strong>
-        </div>
       </div>
     </div>
   );
