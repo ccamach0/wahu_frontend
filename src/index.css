@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    @apply bg-wahu-50 font-sans text-gray-800 antialiased;
+    margin: 0;
+  }
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-wahu-50;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-wahu-300 rounded-full;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-wahu-500 hover:bg-wahu-600 text-white font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 active:scale-95 flex items-center gap-2;
+  }
+  .btn-secondary {
+    @apply bg-white hover:bg-wahu-50 text-wahu-600 font-semibold px-5 py-2.5 rounded-xl border border-wahu-200 transition-all duration-200 active:scale-95 flex items-center gap-2;
+  }
+  .card {
+    @apply bg-white rounded-2xl shadow-sm border border-wahu-100 overflow-hidden;
+  }
+  .page-header {
+    @apply flex flex-col items-center justify-center py-10 gap-3;
+  }
+  .page-icon {
+    @apply w-16 h-16 text-wahu-500;
+  }
+  .page-title {
+    @apply text-2xl font-bold text-wahu-600;
+  }
+  .page-subtitle {
+    @apply text-gray-500 text-center max-w-md;
+  }
+  .sidebar-item {
+    @apply flex items-center gap-3 px-4 py-2.5 rounded-xl cursor-pointer transition-all duration-150 text-gray-600 hover:bg-wahu-50 hover:text-wahu-600 font-medium;
+  }
+  .sidebar-item.active {
+    @apply bg-wahu-500 text-white hover:bg-wahu-600 hover:text-white;
+  }
+  .input {
+    @apply w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-wahu-300 focus:border-transparent transition-all;
+  }
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  .progress-bar {
+    @apply h-1.5 rounded-full bg-wahu-100 overflow-hidden;
+  }
+  .progress-fill {
+    @apply h-full bg-gradient-to-r from-wahu-400 to-wahu-500 rounded-full transition-all duration-500;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-wahu-500 to-wahu-400 bg-clip-text text-transparent;
+  }
+}

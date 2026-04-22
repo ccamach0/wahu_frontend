@@ -1,0 +1,121 @@
+const BASE_URL = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL}/api`
+  : '/api';
+
+const getHeaders = () => {
+  const token = localStorage.getItem('wahu_token');
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+};
+
+const request = async (path, options = {}) => {
+  const res = await fetch(`${BASE_URL}${path}`, {
+    headers: getHeaders(),
+    ...options,
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: 'Error de red' }));
+    const error = new Error(err.error || 'Error');
+    error.code = err.code;
+    error.data = err;
+    throw error;
+  }
+  return res.json();
+};
+
+export const api = {
+  // Auth
+  login: (data) => request('/auth/login', { method: 'POST', body: JSON.stringify(data) }),
+  register: (data) => request('/auth/register', { method: 'POST', body: JSON.stringify(data) }),
+  me: () => request('/auth/me'),
+  googleAuth: (access_token) => request('/auth/google', { method: 'POST', body: JSON.stringify({ access_token }) }),
+  verifyEmail: (token) => request(`/auth/verify/${token}`),
+  resendVerification: (email) => request('/auth/resend-verification', { method: 'POST', body: JSON.stringify({ email }) }),
+  setActivePet: (pet_id) => request('/auth/active-pet', { method: 'PUT', body: JSON.stringify({ pet_id }) }),
+
+  // Pets
+  getPets: (params = {}) => {
+    const q = new URLSearchParams(params).toString();
+    return request(`/pets?${q}`);
+  },
+  getPopularPets: () => request('/pets/popular'),
+  getPet: (username) => request(`/pets/${username}`),
+  createPet: (data) => request('/pets', { method: 'POST', body: JSON.stringify(data) }),
+  getMyPets: () => request('/pets/my/pets'),
+  deletePet: (id) => request(`/pets/${id}`, { method: 'DELETE' }),
+
+  // Cards
+  getCards: (params = {}) => {
+    const q = new URLSearchParams(params).toString();
+    return request(`/cards?${q}`);
+  },
+  createCard: (data) => request('/cards', { method: 'POST', body: JSON.stringify(data) }),
+  pawCard: (id, pet_id) => request(`/cards/${id}/paw`, { method: 'POST', body: JSON.stringify({ pet_id }) }),
+  addCardToPet: (id, pet_id) => request(`/cards/${id}/add-to-pet`, { method: 'POST', body: JSON.stringify({ pet_id }) }),
+
+  // Clans
+  getClans: (params = {}) => {
+    const q = new URLSearchParams(params).toString();
+    return request(`/clans?${q}`);
+  },
+  getClan: (id) => request(`/clans/${id}`),
+  createClan: (data) => request('/clans', { method: 'POST', body: JSON.stringify(data) }),
+  joinClan: (id, pet_id) => request(`/clans/${id}/join`, { method: 'POST', body: JSON.stringify({ pet_id }) }),
+  getMyClans: (pet_id) => request(`/clans/my/${pet_id}`),
+
+  // Friendships
+  getFriendships: (petId) => request(`/friendships/${petId}`),
+  getPendingRequests: (petId) => request(`/friendships/pending/${petId}`),
+  getSentRequests: (petId) => request(`/friendships/sent/${petId}`),
+  sendFriendRequest: (data) => request('/friendships/request', { method: 'POST', body: JSON.stringify(data) }),
+  cancelFriendRequest: (id) => request(`/friendships/${id}`, { method: 'DELETE' }),
+  acceptFriendRequest: (id) => request(`/friendships/${id}/accept`, { method: 'PUT' }),
+  rejectFriendRequest: (id) => request(`/friendships/${id}/reject`, { method: 'PUT' }),
+  addToManada: (petId, friendId) => request(`/friendships/${petId}/manada/${friendId}`, { method: 'POST' }),
+  removeFromManada: (petId, friendId) => request(`/friendships/${petId}/manada/${friendId}`, { method: 'DELETE' }),
+  deleteFriendship: (petId, friendId) => request(`/friendships/${petId}/jauria/${friendId}`, { method: 'DELETE' }),
+  reorderManada: (petId, ids) => request(`/friendships/${petId}/manada/reorder`, { method: 'PUT', body: JSON.stringify({ ids }) }),
+
+  // Notifications
+  getNotifications: () => request('/notifications'),
+  getUnreadCount: () => request('/notifications/unread-count'),
+  markNotificationRead: (id) => request(`/notifications/${id}/read`, { method: 'PUT' }),
+  markAllNotificationsRead: () => request('/notifications/read-all', { method: 'PUT' }),
+
+  // Companions
+  getCompanions: (params = {}) => { const q = new URLSearchParams(params).toString(); return request(`/companions?${q}`); },
+  getCompanion: (username) => request(`/companions/${username}`),
+  getCompanionProfile: (username) => request(`/companions/${username}`),
+
+  // Chat
+  getConversations: (petId) => request(petId ? `/chat/conversations?petId=${petId}` : '/chat/conversations'),
+  startConversation: (pet_id) => request('/chat/conversations', { method: 'POST', body: JSON.stringify({ pet_id }) }),
+  getMessages: (convId, since) => request(`/chat/conversations/${convId}/messages${since ? `?since=${encodeURIComponent(since)}` : ''}`),
+  sendMessage: (convId, content, sent_as_owner = false) => request(`/chat/conversations/${convId}/messages`, { method: 'POST', body: JSON.stringify({ content, sent_as_owner }) }),
+  deleteConversation: (convId) => request(`/chat/conversations/${convId}`, { method: 'DELETE' }),
+  getChatUnread: () => request('/chat/unread'),
+
+  // Contests
+  getContests: () => request('/contests'),
+  getActiveContests: () => request('/contests/active'),
+
+  // Appointments (Citas/Paseos)
+  getAppointments: (petId, status) => {
+    const q = status ? `?status=${status}` : '';
+    return request(`/appointments/${petId}${q}`);
+  },
+  createAppointment: (data) => request('/appointments', { method: 'POST', body: JSON.stringify(data) }),
+  updateAppointment: (id, status) => request(`/appointments/${id}`, { method: 'PUT', body: JSON.stringify({ status }) }),
+  deleteAppointment: (id) => request(`/appointments/${id}`, { method: 'DELETE' }),
+
+  // Stats
+  getStats: () => request('/stats'),
+
+  // Hydrant
+  getHydrant: () => request('/hydrant'),
+  toggleHydrant: (petId, enabled) => request(`/hydrant/${petId}/toggle`, { method: 'PUT', body: JSON.stringify({ enabled }) }),
+};
+
+export default api;
