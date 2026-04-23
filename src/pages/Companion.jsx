@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Plus, PawPrint, Trash2, Star, AlertTriangle, ExternalLink, X } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth.jsx';
@@ -60,6 +60,13 @@ export default function Companion() {
   const [userGallery, setUserGallery] = useState([]);
   const [galleryFile, setGalleryFile] = useState(null);
   const [uploadingUserGallery, setUploadingUserGallery] = useState(false);
+
+  useEffect(() => {
+    if (!user?.id) return;
+    api.getCompanionGallery(user.id, 100)
+      .then(res => setUserGallery(res.images || []))
+      .catch(() => setUserGallery([]));
+  }, [user?.id]);
 
   const handleCreate = async (e) => {
     e.preventDefault();
