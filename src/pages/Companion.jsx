@@ -4,6 +4,7 @@ import { User, Plus, PawPrint, Trash2, Star, AlertTriangle, ExternalLink, X } fr
 import { useAuth } from '../hooks/useAuth.jsx';
 import { usePetContext } from '../hooks/usePetContext.jsx';
 import ImageUpload from '../components/ImageUpload.jsx';
+import Gallery from '../components/Gallery.jsx';
 import api from '../services/api.js';
 
 const SPECIES = ['Perro', 'Gato', 'Conejo', 'Pájaro', 'Hamster', 'Otro'];
@@ -273,21 +274,11 @@ export default function Companion() {
             {uploadingUserGallery ? 'Subiendo...' : 'Subir'}
           </button>
         </div>
-        {userGallery.length > 0 && (
-          <div className="grid grid-cols-3 gap-3">
-            {userGallery.map(img => (
-              <div key={img.id} className="relative group">
-                <img src={img.image_url} alt="Gallery" className="w-full h-24 object-cover rounded-lg" />
-                <button
-                  onClick={() => handleDeleteUserGalleryImage(img.id)}
-                  className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition"
-                >
-                  <X size={14} />
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
+        <Gallery
+          images={userGallery}
+          onDelete={handleDeleteUserGalleryImage}
+          isOwner={true}
+        />
       </div>
 
       {/* Header mis mascotas */}
