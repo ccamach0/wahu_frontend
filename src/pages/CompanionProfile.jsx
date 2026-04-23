@@ -213,7 +213,7 @@ export default function CompanionProfile() {
                       onClick={() => sendRequest(pet)}
                       disabled={busy || !firstPet}
                       className="btn-primary text-xs py-1.5 px-3 disabled:opacity-50">
-                      {busy ? '...' : 'Enviar solicitud'}
+                      {busy ? '...' : '+ Agregar a Jauría'}
                     </button>
                   )
                 }
