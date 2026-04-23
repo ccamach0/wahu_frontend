@@ -53,6 +53,7 @@ export const api = {
   createPet: (data) => request('/pets', { method: 'POST', body: data }),
   getMyPets: () => request('/pets/my/pets'),
   deletePet: (id) => request(`/pets/${id}`, { method: 'DELETE' }),
+  updatePetAvatar: (id, data) => request(`/pets/${id}/avatar`, { method: 'PUT', body: data }),
 
   // Pet Gallery
   uploadPetGalleryImage: (petId, file) => {

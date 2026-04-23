@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, Plus, PawPrint, Trash2, Star, AlertTriangle, ExternalLink } from 'lucide-react';
+import { User, Plus, PawPrint, Trash2, Star, AlertTriangle, ExternalLink, X } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth.jsx';
 import { usePetContext } from '../hooks/usePetContext.jsx';
 import ImageUpload from '../components/ImageUpload.jsx';
@@ -57,6 +57,9 @@ export default function Companion() {
   const [profileForm, setProfileForm] = useState({ name: '', bio: '' });
   const [profileImage, setProfileImage] = useState(null);
   const [profileSaving, setProfileSaving] = useState(false);
+  const [userGallery, setUserGallery] = useState([]);
+  const [galleryFile, setGalleryFile] = useState(null);
+  const [uploadingUserGallery, setUploadingUserGallery] = useState(false);
 
   const handleCreate = async (e) => {
     e.preventDefault();
@@ -111,12 +114,34 @@ export default function Companion() {
       await api.updateCompanionProfile(user.id, data);
       setEditingProfile(false);
       setProfileImage(null);
-      // Reload user data
       window.location.reload();
     } catch (err) {
       alert(err.message || 'Error al actualizar perfil');
     } finally {
       setProfileSaving(false);
+    }
+  };
+
+  const handleUploadUserGallery = async () => {
+    if (!galleryFile || !user) return;
+    setUploadingUserGallery(true);
+    try {
+      const result = await api.uploadCompanionGalleryImage(user.id, galleryFile);
+      setUserGallery([...userGallery, result]);
+      setGalleryFile(null);
+    } catch (err) {
+      alert(err.message || 'Error al subir foto');
+    } finally {
+      setUploadingUserGallery(false);
+    }
+  };
+
+  const handleDeleteUserGalleryImage = async (imageId) => {
+    try {
+      await api.deleteCompanionGalleryImage(user.id, imageId);
+      setUserGallery(userGallery.filter(img => img.id !== imageId));
+    } catch (err) {
+      alert(err.message || 'Error al eliminar foto');
     }
   };
 
@@ -210,6 +235,51 @@ export default function Companion() {
               {profileSaving ? 'Guardando...' : 'Guardar cambios'}
             </button>
           </form>
+        )}
+      </div>
+
+      {/* Galería del usuario */}
+      <div className="card p-5 mb-6">
+        <h2 className="font-bold text-gray-800 mb-3">Mi galería</h2>
+        <div className="flex gap-3 items-end mb-4">
+          <div className="flex-1">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setGalleryFile(e.target.files?.[0] || null)}
+              className="hidden"
+              id="user-gallery-upload"
+            />
+            <label htmlFor="user-gallery-upload" className="block cursor-pointer">
+              <div className="border-2 border-dashed border-wahu-200 rounded-lg p-3 text-center hover:bg-orange-50 transition">
+                <p className="text-sm text-gray-600">
+                  {galleryFile ? `✓ ${galleryFile.name}` : 'Selecciona una foto'}
+                </p>
+              </div>
+            </label>
+          </div>
+          <button
+            onClick={handleUploadUserGallery}
+            disabled={!galleryFile || uploadingUserGallery}
+            className="btn-primary text-sm py-2 px-4 disabled:opacity-50"
+          >
+            {uploadingUserGallery ? 'Subiendo...' : 'Subir'}
+          </button>
+        </div>
+        {userGallery.length > 0 && (
+          <div className="grid grid-cols-3 gap-3">
+            {userGallery.map(img => (
+              <div key={img.id} className="relative group">
+                <img src={img.image_url} alt="Gallery" className="w-full h-24 object-cover rounded-lg" />
+                <button
+                  onClick={() => handleDeleteUserGalleryImage(img.id)}
+                  className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition"
+                >
+                  <X size={14} />
+                </button>
+              </div>
+            ))}
+          </div>
         )}
       </div>
 

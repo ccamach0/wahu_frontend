@@ -54,6 +54,9 @@ export default function PetProfile() {
   const [galleryLoading, setGalleryLoading] = useState(false);
   const [uploadingGallery, setUploadingGallery] = useState(false);
   const [galleryFile, setGalleryFile] = useState(null);
+  const [editingAvatar, setEditingAvatar] = useState(false);
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarUploading, setAvatarUploading] = useState(false);
 
   useEffect(() => {
     api.getPet(username)
@@ -112,6 +115,23 @@ export default function PetProfile() {
       alert(err.message || 'Error al subir foto');
     } finally {
       setUploadingGallery(false);
+    }
+  };
+
+  const handleChangeAvatar = async () => {
+    if (!avatarFile || !pet) return;
+    setAvatarUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('image', avatarFile);
+      const result = await api.updatePetAvatar(pet.id, formData);
+      setPet({ ...pet, avatar_url: result.avatar_url });
+      setEditingAvatar(false);
+      setAvatarFile(null);
+    } catch (err) {
+      alert(err.message || 'Error al cambiar avatar');
+    } finally {
+      setAvatarUploading(false);
     }
   };
 
@@ -191,21 +211,68 @@ export default function PetProfile() {
       <div className="card overflow-hidden mb-5">
         {/* Banner */}
         <div className="h-32 bg-gradient-to-br from-wahu-400 to-orange-500 relative">
-          <div className="absolute -bottom-10 left-6">
-            <img
-              src={pet.avatar_url || ''}
-              alt={pet.name}
-              className="w-20 h-20 rounded-2xl object-cover border-4 border-white shadow-md bg-wahu-100"
-              onError={e => {
-                e.target.style.display = 'none';
-                e.target.nextSibling?.classList.remove('hidden');
-              }}
-            />
-            <div className="hidden w-20 h-20 rounded-2xl border-4 border-white shadow-md bg-gradient-to-br from-wahu-400 to-orange-500 flex items-center justify-center text-white text-2xl font-bold">
-              {pet.name[0].toUpperCase()}
-            </div>
+          <div className="absolute -bottom-10 left-6 group">
+            {!editingAvatar ? (
+              <>
+                <img
+                  src={pet.avatar_url || ''}
+                  alt={pet.name}
+                  className="w-20 h-20 rounded-2xl object-cover border-4 border-white shadow-md bg-wahu-100"
+                  onError={e => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling?.classList.remove('hidden');
+                  }}
+                />
+                <div className="hidden w-20 h-20 rounded-2xl border-4 border-white shadow-md bg-gradient-to-br from-wahu-400 to-orange-500 flex items-center justify-center text-white text-2xl font-bold">
+                  {pet.name[0].toUpperCase()}
+                </div>
+                {isOwnPet && (
+                  <button
+                    onClick={() => setEditingAvatar(true)}
+                    className="absolute inset-0 bg-black/40 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition text-white text-xs font-medium"
+                  >
+                    Cambiar
+                  </button>
+                )}
+              </>
+            ) : (
+              <div className="w-20 h-20 rounded-2xl border-4 border-white shadow-md bg-wahu-100 flex items-center justify-center relative">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setAvatarFile(e.target.files?.[0] || null)}
+                  className="hidden"
+                  id="pet-avatar-upload"
+                />
+                <label htmlFor="pet-avatar-upload" className="cursor-pointer text-center">
+                  <p className="text-xs font-medium text-gray-600">
+                    {avatarFile ? '✓' : 'Selecciona'}
+                  </p>
+                </label>
+              </div>
+            )}
           </div>
-          <div className="absolute top-3 right-4">
+          <div className="absolute top-3 right-4 flex flex-col gap-2">
+            {editingAvatar && (
+              <div className="flex gap-2">
+                <button
+                  onClick={handleChangeAvatar}
+                  disabled={!avatarFile || avatarUploading}
+                  className="bg-green-500 hover:bg-green-600 text-white text-xs px-3 py-1 rounded-full font-medium disabled:opacity-50"
+                >
+                  {avatarUploading ? '...' : 'Guardar'}
+                </button>
+                <button
+                  onClick={() => {
+                    setEditingAvatar(false);
+                    setAvatarFile(null);
+                  }}
+                  className="bg-gray-400 hover:bg-gray-500 text-white text-xs px-3 py-1 rounded-full font-medium"
+                >
+                  Cancelar
+                </button>
+              </div>
+            )}
             <span className="bg-white/90 text-wahu-600 font-bold text-sm px-3 py-1 rounded-full flex items-center gap-1">
               <Star size={13} fill="currentColor" /> Nv. {pet.level}
             </span>
