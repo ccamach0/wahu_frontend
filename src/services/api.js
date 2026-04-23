@@ -5,14 +5,22 @@ const BASE_URL = import.meta.env.VITE_API_URL
 const getHeaders = () => {
   const token = localStorage.getItem('wahu_token');
   return {
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+};
+
+const getHeadersWithContentType = () => {
+  const token = localStorage.getItem('wahu_token');
+  return {
     'Content-Type': 'application/json',
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 };
 
 const request = async (path, options = {}) => {
+  const headers = options.body instanceof FormData ? getHeaders() : getHeadersWithContentType();
   const res = await fetch(`${BASE_URL}${path}`, {
-    headers: getHeaders(),
+    headers,
     ...options,
   });
   if (!res.ok) {
@@ -42,9 +50,22 @@ export const api = {
   },
   getPopularPets: () => request('/pets/popular'),
   getPet: (username) => request(`/pets/${username}`),
-  createPet: (data) => request('/pets', { method: 'POST', body: JSON.stringify(data) }),
+  createPet: (data) => request('/pets', { method: 'POST', body: data }),
   getMyPets: () => request('/pets/my/pets'),
   deletePet: (id) => request(`/pets/${id}`, { method: 'DELETE' }),
+
+  // Pet Gallery
+  uploadPetGalleryImage: (petId, file) => {
+    const formData = new FormData();
+    formData.append('image', file);
+    return request(`/pets/${petId}/gallery`, { method: 'POST', body: formData });
+  },
+  getPetGallery: (petId, limit = 10, offset = 0) =>
+    request(`/pets/${petId}/gallery?limit=${limit}&offset=${offset}`),
+  deletePetGalleryImage: (petId, imageId) =>
+    request(`/pets/${petId}/gallery/${imageId}`, { method: 'DELETE' }),
+  reorderPetGallery: (petId, imageIds) =>
+    request(`/pets/${petId}/gallery/reorder`, { method: 'PUT', body: JSON.stringify({ imageIds }) }),
 
   // Cards
   getCards: (params = {}) => {
@@ -88,6 +109,21 @@ export const api = {
   getCompanions: (params = {}) => { const q = new URLSearchParams(params).toString(); return request(`/companions?${q}`); },
   getCompanion: (username) => request(`/companions/${username}`),
   getCompanionProfile: (username) => request(`/companions/${username}`),
+  updateCompanionProfile: (companionId, data) =>
+    request(`/companions/${companionId}`, { method: 'PUT', body: data }),
+
+  // Companion Gallery
+  uploadCompanionGalleryImage: (companionId, file) => {
+    const formData = new FormData();
+    formData.append('image', file);
+    return request(`/companions/${companionId}/gallery`, { method: 'POST', body: formData });
+  },
+  getCompanionGallery: (companionId, limit = 10, offset = 0) =>
+    request(`/companions/${companionId}/gallery?limit=${limit}&offset=${offset}`),
+  deleteCompanionGalleryImage: (companionId, imageId) =>
+    request(`/companions/${companionId}/gallery/${imageId}`, { method: 'DELETE' }),
+  reorderCompanionGallery: (companionId, imageIds) =>
+    request(`/companions/${companionId}/gallery/reorder`, { method: 'PUT', body: JSON.stringify({ imageIds }) }),
 
   // Chat
   getConversations: (petId) => request(petId ? `/chat/conversations?petId=${petId}` : '/chat/conversations'),

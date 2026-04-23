@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { User, Plus, PawPrint, Trash2, Star, AlertTriangle, ExternalLink } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth.jsx';
 import { usePetContext } from '../hooks/usePetContext.jsx';
+import ImageUpload from '../components/ImageUpload.jsx';
 import api from '../services/api.js';
 
 const SPECIES = ['Perro', 'Gato', 'Conejo', 'Pájaro', 'Hamster', 'Otro'];
@@ -48,6 +49,7 @@ export default function Companion() {
   const { pets, activePet, setActivePet, addPet, removePet, loading } = usePetContext();
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ name: '', username: '', breed: '', species: 'Perro', location: '', bio: '' });
+  const [imageFile, setImageFile] = useState(null);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
   const [petToDelete, setPetToDelete] = useState(null);
@@ -58,9 +60,21 @@ export default function Companion() {
     if (!form.name || !form.username) return setError('Nombre y username son requeridos');
     setSaving(true);
     try {
-      const newPet = await api.createPet(form);
+      const data = new FormData();
+      data.append('name', form.name);
+      data.append('username', form.username);
+      data.append('breed', form.breed);
+      data.append('species', form.species);
+      data.append('location', form.location);
+      data.append('bio', form.bio);
+      if (imageFile) {
+        data.append('image', imageFile);
+      }
+
+      const newPet = await api.createPet(data);
       addPet(newPet);
       setForm({ name: '', username: '', breed: '', species: 'Perro', location: '', bio: '' });
+      setImageFile(null);
       setShowForm(false);
     } catch (err) {
       setError(err.message || 'Error al crear mascota');
@@ -154,6 +168,33 @@ export default function Companion() {
             <div className="col-span-2">
               <label className="block text-xs font-medium text-gray-600 mb-1">Bio</label>
               <textarea className="input text-sm resize-none h-16" placeholder="Cuéntanos sobre tu mascota..." value={form.bio} onChange={e => setForm({ ...form, bio: e.target.value })} />
+            </div>
+            <div className="col-span-2">
+              <label className="block text-xs font-medium text-gray-600 mb-2">Avatar (opcional)</label>
+              <div className="border-2 border-dashed border-wahu-500 rounded-lg p-4 text-center cursor-pointer hover:bg-orange-50 transition">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={e => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      if (file.size > 10 * 1024 * 1024) {
+                        setError('La imagen debe ser menor a 10MB');
+                        return;
+                      }
+                      setImageFile(file);
+                    }
+                  }}
+                  className="hidden"
+                  id="avatar-upload"
+                />
+                <label htmlFor="avatar-upload" className="block cursor-pointer">
+                  <p className="text-sm text-gray-600 font-medium">
+                    {imageFile ? `✓ ${imageFile.name}` : 'Selecciona una imagen'}
+                  </p>
+                  <p className="text-xs text-gray-400 mt-1">PNG, JPG, WebP (máx. 10MB)</p>
+                </label>
+              </div>
             </div>
             <div className="col-span-2 flex gap-3 pt-1">
               <button type="submit" disabled={saving} className="btn-primary text-sm py-2 flex-1">

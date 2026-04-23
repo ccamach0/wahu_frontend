@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MapPin, Users, Star, ArrowLeft, PawPrint, Shield, X } from 'lucide-react';
 import api from '../services/api.js';
+import Gallery from '../components/Gallery.jsx';
 import { useAuth } from '../hooks/useAuth.jsx';
 import { useMyPets } from '../hooks/useMyPets.jsx';
 
@@ -49,6 +50,8 @@ export default function PetProfile() {
   const [pet, setPet] = useState(null);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
+  const [gallery, setGallery] = useState([]);
+  const [galleryLoading, setGalleryLoading] = useState(false);
 
   useEffect(() => {
     api.getPet(username)
@@ -56,6 +59,15 @@ export default function PetProfile() {
       .catch(() => setPet(null))
       .finally(() => setLoading(false));
   }, [username]);
+
+  useEffect(() => {
+    if (!pet?.id) return;
+    setGalleryLoading(true);
+    api.getPetGallery(pet.id, 100)
+      .then(res => setGallery(res.images || []))
+      .catch(() => setGallery([]))
+      .finally(() => setGalleryLoading(false));
+  }, [pet?.id]);
 
   const { status, setStatus, friendshipId } = useFriendStatus(firstPet, pet?.id);
 
@@ -248,6 +260,16 @@ export default function PetProfile() {
               );
             })}
           </div>
+        </div>
+      )}
+
+      {/* Galería */}
+      {gallery.length > 0 && (
+        <div className="card p-5 mb-5">
+          <h2 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+            📸 Galería
+          </h2>
+          <Gallery images={gallery} loading={galleryLoading} isOwner={false} />
         </div>
       )}
 
