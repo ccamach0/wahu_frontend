@@ -53,6 +53,10 @@ export default function Companion() {
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
   const [petToDelete, setPetToDelete] = useState(null);
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [profileForm, setProfileForm] = useState({ name: '', bio: '' });
+  const [profileImage, setProfileImage] = useState(null);
+  const [profileSaving, setProfileSaving] = useState(false);
 
   const handleCreate = async (e) => {
     e.preventDefault();
@@ -95,6 +99,27 @@ export default function Companion() {
     }
   };
 
+  const handleEditProfile = async (e) => {
+    e.preventDefault();
+    setProfileSaving(true);
+    try {
+      const data = new FormData();
+      if (profileForm.name) data.append('name', profileForm.name);
+      if (profileForm.bio) data.append('bio', profileForm.bio);
+      if (profileImage) data.append('image', profileImage);
+
+      await api.updateCompanionProfile(user.id, data);
+      setEditingProfile(false);
+      setProfileImage(null);
+      // Reload user data
+      window.location.reload();
+    } catch (err) {
+      alert(err.message || 'Error al actualizar perfil');
+    } finally {
+      setProfileSaving(false);
+    }
+  };
+
   return (
     <div className="max-w-2xl mx-auto px-6 py-8">
       {petToDelete && (
@@ -113,19 +138,79 @@ export default function Companion() {
 
       {/* Perfil */}
       <div className="card p-6 mb-6">
-        <h2 className="font-bold text-gray-800 mb-4">Mi perfil</h2>
-        <div className="flex items-center gap-4">
-          <img
-            src={user?.avatar_url || `https://i.pravatar.cc/80?u=${user?.id}`}
-            alt={user?.name}
-            className="w-16 h-16 rounded-full object-cover border-3 border-wahu-200"
-          />
-          <div>
-            <p className="font-bold text-gray-800 text-lg">{user?.name || 'Tu nombre'}</p>
-            <p className="text-wahu-500 font-medium text-sm">@{user?.username || 'tu_usuario'}</p>
-            <p className="text-xs text-gray-400 mt-0.5">{user?.email}</p>
-          </div>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-bold text-gray-800">Mi perfil</h2>
+          <button
+            onClick={() => {
+              setEditingProfile(!editingProfile);
+              setProfileForm({ name: user?.name || '', bio: user?.bio || '' });
+            }}
+            className="text-sm btn-secondary py-1.5"
+          >
+            {editingProfile ? 'Cancelar' : 'Editar'}
+          </button>
         </div>
+
+        {!editingProfile ? (
+          <div className="flex items-center gap-4">
+            <img
+              src={user?.avatar_url || `https://i.pravatar.cc/80?u=${user?.id}`}
+              alt={user?.name}
+              className="w-16 h-16 rounded-full object-cover border-3 border-wahu-200"
+            />
+            <div>
+              <p className="font-bold text-gray-800 text-lg">{user?.name || 'Tu nombre'}</p>
+              <p className="text-wahu-500 font-medium text-sm">@{user?.username || 'tu_usuario'}</p>
+              <p className="text-xs text-gray-400 mt-0.5">{user?.email}</p>
+            </div>
+          </div>
+        ) : (
+          <form onSubmit={handleEditProfile} className="space-y-4">
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-2">Nombre</label>
+              <input
+                type="text"
+                value={profileForm.name}
+                onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
+                className="input w-full"
+                placeholder="Tu nombre"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-2">Bio</label>
+              <textarea
+                value={profileForm.bio}
+                onChange={(e) => setProfileForm({ ...profileForm, bio: e.target.value })}
+                className="input w-full resize-none h-20"
+                placeholder="Cuéntanos sobre ti..."
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-2">Avatar (opcional)</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setProfileImage(e.target.files?.[0] || null)}
+                className="hidden"
+                id="profile-avatar-upload"
+              />
+              <label htmlFor="profile-avatar-upload" className="block cursor-pointer">
+                <div className="border-2 border-dashed border-wahu-200 rounded-lg p-4 text-center hover:bg-orange-50 transition">
+                  <p className="text-sm text-gray-600">
+                    {profileImage ? `✓ ${profileImage.name}` : 'Selecciona una imagen'}
+                  </p>
+                </div>
+              </label>
+            </div>
+            <button
+              type="submit"
+              disabled={profileSaving}
+              className="btn-primary w-full"
+            >
+              {profileSaving ? 'Guardando...' : 'Guardar cambios'}
+            </button>
+          </form>
+        )}
       </div>
 
       {/* Header mis mascotas */}

@@ -52,6 +52,8 @@ export default function PetProfile() {
   const [actionLoading, setActionLoading] = useState(false);
   const [gallery, setGallery] = useState([]);
   const [galleryLoading, setGalleryLoading] = useState(false);
+  const [uploadingGallery, setUploadingGallery] = useState(false);
+  const [galleryFile, setGalleryFile] = useState(null);
 
   useEffect(() => {
     api.getPet(username)
@@ -96,6 +98,20 @@ export default function PetProfile() {
     } catch {
     } finally {
       setActionLoading(false);
+    }
+  };
+
+  const handleUploadGalleryPhoto = async () => {
+    if (!galleryFile || !pet) return;
+    setUploadingGallery(true);
+    try {
+      const result = await api.uploadPetGalleryImage(pet.id, galleryFile);
+      setGallery([...gallery, result]);
+      setGalleryFile(null);
+    } catch (err) {
+      alert(err.message || 'Error al subir foto');
+    } finally {
+      setUploadingGallery(false);
     }
   };
 
@@ -263,13 +279,47 @@ export default function PetProfile() {
         </div>
       )}
 
+      {/* Subir foto a galería (solo si es el dueño) */}
+      {isOwnPet && (
+        <div className="card p-5 mb-5">
+          <h2 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+            📸 Agregar foto a galería
+          </h2>
+          <div className="flex gap-3 items-end">
+            <div className="flex-1">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setGalleryFile(e.target.files?.[0] || null)}
+                className="hidden"
+                id="gallery-upload"
+              />
+              <label htmlFor="gallery-upload" className="block cursor-pointer">
+                <div className="border-2 border-dashed border-wahu-200 rounded-lg p-3 text-center hover:bg-orange-50 transition">
+                  <p className="text-sm text-gray-600">
+                    {galleryFile ? `✓ ${galleryFile.name}` : 'Selecciona una foto'}
+                  </p>
+                </div>
+              </label>
+            </div>
+            <button
+              onClick={handleUploadGalleryPhoto}
+              disabled={!galleryFile || uploadingGallery}
+              className="btn-primary text-sm py-2 px-4 disabled:opacity-50"
+            >
+              {uploadingGallery ? 'Subiendo...' : 'Subir'}
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Galería */}
       {gallery.length > 0 && (
         <div className="card p-5 mb-5">
           <h2 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
             📸 Galería
           </h2>
-          <Gallery images={gallery} loading={galleryLoading} isOwner={false} />
+          <Gallery images={gallery} loading={galleryLoading} isOwner={isOwnPet} />
         </div>
       )}
 
