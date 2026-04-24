@@ -20,19 +20,21 @@ export default function ClanProfile() {
   const [activeTab, setActiveTab] = useState('posts');
   const [userRole, setUserRole] = useState(null);
   const [isMember, setIsMember] = useState(false);
-  const wasInitialLoadRef = useRef(false);
+  const previousPetIdRef = useRef(null);
 
   useEffect(() => {
     loadClan();
   }, [clanId, firstPet]);
 
-  // Redirigir si la mascota cambió y no es miembro
+  // Redirigir si cambió la mascota y la nueva no es miembro
   useEffect(() => {
-    if (wasInitialLoadRef.current && !loading && !isMember && firstPet) {
-      navigate('/clans', { replace: true });
-    }
-    if (!loading && isMember) {
-      wasInitialLoadRef.current = true;
+    if (!loading && firstPet) {
+      // Si la mascota cambió y no es miembro, redirigir
+      if (previousPetIdRef.current && previousPetIdRef.current !== firstPet.id && !isMember) {
+        navigate('/clans', { replace: true });
+      }
+      // Actualizar la mascota anterior solo si fue cargada
+      previousPetIdRef.current = firstPet.id;
     }
   }, [isMember, loading, firstPet, navigate]);
 
