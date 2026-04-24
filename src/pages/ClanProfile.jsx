@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Users, MessageSquare, Image, LogOut, Trash2, Shield } from 'lucide-react';
+import { Users, MessageSquare, Image, LogOut, Trash2, Shield, Clock, AlertCircle } from 'lucide-react';
 import api from '../services/api.js';
 import { useAuth } from '../hooks/useAuth.jsx';
 import { useMyPets } from '../hooks/useMyPets.jsx';
@@ -71,7 +71,7 @@ export default function ClanProfile() {
 
   const handleLeaveClan = async () => {
     const confirmed = window.confirm(
-      '⚠️  Vas a salir del clan "' + clan.name + '"\n\nEsta acción es irreversible. ¿Estás seguro?'
+      'Vas a salir del clan "' + clan.name + '"\n\nEsta acción es irreversible. ¿Estás seguro?'
     );
     if (!confirmed) return;
 
@@ -85,7 +85,7 @@ export default function ClanProfile() {
 
   const handleDeleteClan = async () => {
     const confirmed = window.confirm(
-      '⚠️  ¡ADVERTENCIA! Vas a ELIMINAR el clan "' + clan.name + '" de forma permanente.\n\nTodos los posts, galería, mensajes y miembros serán eliminados.\n\n¿Estás completamente seguro?'
+      '¡ADVERTENCIA! Vas a ELIMINAR el clan "' + clan.name + '" de forma permanente.\n\nTodos los posts, galería, mensajes y miembros serán eliminados.\n\n¿Estás completamente seguro?'
     );
     if (!confirmed) return;
 
@@ -171,8 +171,9 @@ export default function ClanProfile() {
               </button>
             )}
             {!isMember && hasPendingRequest && (
-              <span className="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-lg text-sm font-medium">
-                ⏳ Solicitud pendiente
+              <span className="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-lg text-sm font-medium flex items-center gap-1">
+                <Clock size={16} className="text-wahu-500" />
+                Solicitud pendiente
               </span>
             )}
             {!isMember && !hasPendingRequest && (
@@ -260,8 +261,9 @@ export default function ClanProfile() {
               </button>
             )}
             {hasPendingRequest && (
-              <div className="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg font-medium inline-block">
-                ⏳ Solicitud pendiente
+              <div className="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg font-medium inline-flex items-center gap-2">
+                <Clock size={16} className="text-wahu-500" />
+                Solicitud pendiente
               </div>
             )}
           </div>

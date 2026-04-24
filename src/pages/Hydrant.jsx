@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Droplets, MapPin, PawPrint, MessageCircle, CalendarDays } from 'lucide-react';
+import { Droplets, MapPin, PawPrint, MessageCircle, CalendarDays, Search, ChevronDown, ChevronRight } from 'lucide-react';
 import api from '../services/api.js';
 import { useMyPets } from '../hooks/useMyPets.jsx';
 import { AppointmentModal } from './Appointments.jsx';
@@ -119,9 +119,13 @@ export default function Hydrant() {
         <div className="card p-4 mb-5 bg-orange-50 border border-orange-200">
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="w-full flex items-center justify-between text-sm font-semibold text-orange-700 hover:text-orange-800 py-2"
+            className="w-full flex items-center justify-between text-sm font-semibold text-wahu-500 hover:text-wahu-600 py-2"
           >
-            <span>🔍 Filtros {showFilters ? '▼' : '▶'}</span>
+            <span className="flex items-center gap-2">
+              <Search size={16} />
+              Filtros
+            </span>
+            {showFilters ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
           </button>
 
           {showFilters && (

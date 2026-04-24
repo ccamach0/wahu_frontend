@@ -1,4 +1,4 @@
-import { AlertTriangle, X } from 'lucide-react';
+import { AlertTriangle, X, Loader } from 'lucide-react';
 
 /**
  * Modal de confirmación para acciones destructivas
@@ -87,9 +87,10 @@ export default function ConfirmModal({
             <button
               onClick={onConfirm}
               disabled={loading || disabled}
-              className={`flex-1 px-4 py-2.5 rounded-lg font-medium transition-colors disabled:opacity-50 ${colors.button}`}
+              className={`flex-1 px-4 py-2.5 rounded-lg font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2 ${colors.button}`}
             >
-              {loading ? '⏳ Procesando...' : confirmText}
+              {loading && <Loader size={16} className="animate-spin" />}
+              {loading ? 'Procesando...' : confirmText}
             </button>
           </div>
         </div>

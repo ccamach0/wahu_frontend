@@ -1,4 +1,4 @@
-import { Trash2, ChevronLeft, ChevronRight, User, X, ZoomIn, MessageCircle, Send } from 'lucide-react';
+import { Trash2, ChevronLeft, ChevronRight, User, X, ZoomIn, MessageCircle, Send, Check, AlertCircle, Loader } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import ConfirmModal from './ConfirmModal.jsx';
 
@@ -310,14 +310,25 @@ export default function Gallery({
                   <button
                     type="submit"
                     disabled={submittingComment || !commentText.trim()}
-                    className="btn-primary text-xs w-full py-2.5 font-medium disabled:opacity-50 transition-all hover:shadow-md"
+                    className="btn-primary text-xs w-full py-2.5 font-medium disabled:opacity-50 transition-all hover:shadow-md flex items-center justify-center gap-2"
                   >
-                    {submittingComment ? '⏳ Enviando...' : '✓ Comentar'}
+                    {submittingComment ? (
+                      <>
+                        <Loader size={14} className="animate-spin" />
+                        Enviando...
+                      </>
+                    ) : (
+                      <>
+                        <Check size={14} />
+                        Comentar
+                      </>
+                    )}
                   </button>
                 </form>
               ) : (
-                <div className="bg-amber-50 border-l-2 border-amber-400 rounded-lg px-3 py-2.5 text-xs text-amber-700 font-medium">
-                  ⚠️ Necesitas una mascota para comentar
+                <div className="bg-amber-50 border-l-2 border-amber-400 rounded-lg px-3 py-2.5 text-xs text-amber-700 font-medium flex items-center gap-2">
+                  <AlertCircle size={14} />
+                  Necesitas una mascota para comentar
                 </div>
               )}
             </div>
