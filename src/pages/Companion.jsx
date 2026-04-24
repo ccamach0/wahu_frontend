@@ -577,6 +577,7 @@ export default function Companion() {
           firstPet={activePet}
           user={user}
           loading={postsLoading}
+          isProfileOwner={true}
         />
       </div>
     </div>

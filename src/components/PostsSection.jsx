@@ -11,6 +11,7 @@ export default function PostsSection({
   firstPet,
   user,
   loading = false,
+  isProfileOwner = false,
 }) {
   const [postText, setPostText] = useState('');
   const [sendAsOwner, setSendAsOwner] = useState(false);
@@ -159,6 +160,7 @@ export default function PostsSection({
                 firstPet={firstPet}
                 user={user}
                 loading={loadingComments[post.id]}
+                isProfileOwner={isProfileOwner}
               />
             )}
           </div>

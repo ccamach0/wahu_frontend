@@ -9,6 +9,7 @@ export default function CommentsSection({
   firstPet,
   user,
   loading = false,
+  isProfileOwner = false,
 }) {
   const [commentText, setCommentText] = useState('');
   const [sendAsOwner, setSendAsOwner] = useState(false);
@@ -44,6 +45,7 @@ export default function CommentsSection({
               key={comment.id}
               comment={comment}
               isAuthor={firstPet && comment.author_pet_id === firstPet.id}
+              isProfileOwner={isProfileOwner}
               onDelete={() => onDeleteComment(comment.id)}
             />
           ))}

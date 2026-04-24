@@ -555,6 +555,7 @@ export default function PetProfile() {
           firstPet={firstPet}
           user={user}
           loading={postsLoading}
+          isProfileOwner={pet?.companion_id === user?.id}
         />
       </div>
 

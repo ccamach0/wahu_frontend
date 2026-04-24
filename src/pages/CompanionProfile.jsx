@@ -368,6 +368,7 @@ export default function CompanionProfile() {
           firstPet={firstPet}
           user={user}
           loading={postsLoading}
+          isProfileOwner={companion?.id === user?.id}
         />
       </div>
     </div>
