@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, Plus, PawPrint, Trash2, Star, ExternalLink, X } from 'lucide-react';
+import { User, Plus, PawPrint, Trash2, Star, ExternalLink, X, MessageSquare } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth.jsx';
 import { usePetContext } from '../hooks/usePetContext.jsx';
 import ConfirmModal from '../components/ConfirmModal.jsx';
@@ -537,7 +537,8 @@ export default function Companion() {
       {/* Mis publicaciones */}
       <div className="mt-8 mb-5">
         <h2 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
-          💬 Mis publicaciones en el perfil
+          <MessageSquare size={20} className="text-wahu-500" />
+          Mis publicaciones en el perfil
         </h2>
         <PostsSection
           posts={myPosts}
