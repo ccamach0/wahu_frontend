@@ -16,10 +16,14 @@ export default function ClanChatWidget({
 
   useEffect(() => {
     loadMessages();
-    // Refresh messages every 3 seconds
-    const interval = setInterval(loadMessages, 3000);
+    // Refresh messages every 5 seconds, but skip if already loading
+    const interval = setInterval(() => {
+      if (!loading && !sending) {
+        loadMessages();
+      }
+    }, 5000);
     return () => clearInterval(interval);
-  }, [clanId]);
+  }, [clanId, loading, sending]);
 
   useEffect(() => {
     // Scroll to bottom when messages change

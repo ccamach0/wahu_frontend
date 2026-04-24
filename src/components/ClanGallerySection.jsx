@@ -121,7 +121,7 @@ export default function ClanGallerySection({
     <div className="space-y-4">
       {/* Upload */}
       {firstPet && (
-        <label className="card p-8 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-wahu-500 transition">
+        <label className="flex flex-col items-center justify-center w-full card p-8 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-wahu-500 transition">
           <input
             type="file"
             accept="image/*"
@@ -129,15 +129,13 @@ export default function ClanGallerySection({
             disabled={uploading}
             className="hidden"
           />
-          <div className="flex flex-col items-center justify-center text-center">
-            <Upload className="mx-auto mb-2 text-gray-400" size={24} />
-            <p className="text-sm font-medium text-gray-700">
-              {uploading ? 'Subiendo...' : 'Toca para subir una imagen'}
-            </p>
-            <p className="text-xs text-gray-500">
-              PNG, JPG o WebP, máx 10MB
-            </p>
-          </div>
+          <Upload className="mb-2 text-gray-400" size={24} />
+          <p className="text-sm font-medium text-gray-700">
+            {uploading ? 'Subiendo...' : 'Toca para subir una imagen'}
+          </p>
+          <p className="text-xs text-gray-500">
+            PNG, JPG o WebP, máx 10MB
+          </p>
         </label>
       )}
 
