@@ -124,7 +124,7 @@ export default function Home() {
                 <img
                   src="/red.png"
                   alt="Red de mascotas conectadas"
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                  className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
                 />
               </div>
             </div>
@@ -198,7 +198,7 @@ export default function Home() {
               <img
                 src="/chat.png"
                 alt="Interacción con la comunidad"
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
               />
             </div>
 
@@ -365,7 +365,275 @@ export default function Home() {
               <img
                 src="/hidrante.png"
                 alt="Hidrante - Encuentra mascotas cerca de ti"
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ===== CERTAMEN ===== */}
+      <div className="bg-white py-20 border-t border-gray-200">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            {/* Sección izquierda - Imagen */}
+            <div className="relative h-96 rounded-2xl overflow-hidden shadow-2xl">
+              <img
+                src="/certamen_1.png"
+                alt="Certamen - Competencias y desafíos"
+                className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+
+            {/* Sección derecha - Texto */}
+            <div>
+              <div className="inline-block px-4 py-2 bg-purple-100 text-purple-600 rounded-full text-sm font-bold mb-4">
+                🏆 Competiciones
+              </div>
+              <h2 className="text-4xl font-black text-gray-900 mb-6">
+                Participa en certámenes
+              </h2>
+              <p className="text-xl text-gray-600 mb-8">
+                Demuestra las habilidades y características únicas de tu mascota. Compite con otros, gana reconocimiento y obtén tarjetas exclusivas de logros.
+              </p>
+
+              <div className="space-y-4">
+                <div className="flex gap-3 items-start">
+                  <div className="w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-white text-sm font-bold">✓</span>
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-900">Múltiples categorías</p>
+                    <p className="text-sm text-gray-600">Belleza, agilidad, talento y más</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 items-start">
+                  <div className="w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-white text-sm font-bold">✓</span>
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-900">Reconocimiento comunitario</p>
+                    <p className="text-sm text-gray-600">Sé conocido como campeón en la comunidad</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 items-start">
+                  <div className="w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-white text-sm font-bold">✓</span>
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-900">Tarjetas exclusivas</p>
+                    <p className="text-sm text-gray-600">Gana tarjetas de logros únicos</p>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => navigate('/contests')}
+                className="mt-8 inline-flex items-center gap-2 px-6 py-3 bg-purple-600 text-white font-bold rounded-lg hover:bg-purple-700 transition-all hover:shadow-2xl"
+              >
+                Ver Certámenes
+                <ArrowRight size={20} />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ===== CITA ===== */}
+      <div className="bg-gray-50 py-20">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            {/* Sección izquierda - Texto */}
+            <div>
+              <div className="inline-block px-4 py-2 bg-pink-100 text-pink-600 rounded-full text-sm font-bold mb-4">
+                💕 Encuentros
+              </div>
+              <h2 className="text-4xl font-black text-gray-900 mb-6">
+                Organiza citas virtuales
+              </h2>
+              <p className="text-xl text-gray-600 mb-8">
+                Propón encuentros con otras mascotas, agenda citas virtuales y crea momentos especiales. Una forma innovadora de que tu mascota socialice.
+              </p>
+
+              <div className="space-y-4">
+                <div className="flex gap-3 items-start">
+                  <div className="w-6 h-6 rounded-full bg-pink-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-white text-sm font-bold">✓</span>
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-900">Propuestas flexibles</p>
+                    <p className="text-sm text-gray-600">Sugiere encuentros sin compromisos</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 items-start">
+                  <div className="w-6 h-6 rounded-full bg-pink-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-white text-sm font-bold">✓</span>
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-900">Chat integrado</p>
+                    <p className="text-sm text-gray-600">Comunícate directamente con otros dueños</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 items-start">
+                  <div className="w-6 h-6 rounded-full bg-pink-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-white text-sm font-bold">✓</span>
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-900">Historial de encuentros</p>
+                    <p className="text-sm text-gray-600">Mantén un registro de las amistades</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Sección derecha - Imagen */}
+            <div className="relative h-96 rounded-2xl overflow-hidden shadow-2xl">
+              <img
+                src="/cita.png"
+                alt="Citas - Organiza encuentros virtuales"
+                className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ===== CLANES ===== */}
+      <div className="bg-white py-20 border-t border-gray-200">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            {/* Sección izquierda - Imagen */}
+            <div className="relative h-96 rounded-2xl overflow-hidden shadow-2xl">
+              <img
+                src="/clan.png"
+                alt="Clanes - Comunidades temáticas"
+                className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+
+            {/* Sección derecha - Texto */}
+            <div>
+              <div className="inline-block px-4 py-2 bg-blue-100 text-blue-600 rounded-full text-sm font-bold mb-4">
+                👥 Comunidades
+              </div>
+              <h2 className="text-4xl font-black text-gray-900 mb-6">
+                Únete a clanes temáticos
+              </h2>
+              <p className="text-xl text-gray-600 mb-8">
+                Encuentra comunidades basadas en razas, intereses, ubicación o personalidad. Comparte experiencias, posts y fotos con mascotas afines.
+              </p>
+
+              <div className="space-y-4">
+                <div className="flex gap-3 items-start">
+                  <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-white text-sm font-bold">✓</span>
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-900">Miles de clanes</p>
+                    <p className="text-sm text-gray-600">Temática para cada interés y raza</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 items-start">
+                  <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-white text-sm font-bold">✓</span>
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-900">Galería y publicaciones</p>
+                    <p className="text-sm text-gray-600">Comparte contenido exclusivo del clan</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 items-start">
+                  <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-white text-sm font-bold">✓</span>
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-900">Chat grupal</p>
+                    <p className="text-sm text-gray-600">Conversa en tiempo real con el clan</p>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => navigate('/clans')}
+                className="mt-8 inline-flex items-center gap-2 px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition-all hover:shadow-2xl"
+              >
+                Explorar Clanes
+                <ArrowRight size={20} />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ===== MANADA ===== */}
+      <div className="bg-gray-50 py-20">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            {/* Sección izquierda - Texto */}
+            <div>
+              <div className="inline-block px-4 py-2 bg-amber-100 text-amber-600 rounded-full text-sm font-bold mb-4">
+                🐕 Tu Círculo
+              </div>
+              <h2 className="text-4xl font-black text-gray-900 mb-6">
+                Construye tu manada y jauría
+              </h2>
+              <p className="text-xl text-gray-600 mb-8">
+                La manada son tus mejores amigos. La jauría son los amigos de tus amigos. Expande tu círculo social y crea una red de mascotas conectadas.
+              </p>
+
+              <div className="space-y-4">
+                <div className="flex gap-3 items-start">
+                  <div className="w-6 h-6 rounded-full bg-amber-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-white text-sm font-bold">✓</span>
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-900">Manada cercana</p>
+                    <p className="text-sm text-gray-600">Tus mejores amigos en un lugar</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 items-start">
+                  <div className="w-6 h-6 rounded-full bg-amber-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-white text-sm font-bold">✓</span>
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-900">Jauría expandida</p>
+                    <p className="text-sm text-gray-600">Descubre los amigos de tus amigos</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 items-start">
+                  <div className="w-6 h-6 rounded-full bg-amber-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-white text-sm font-bold">✓</span>
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-900">Red social de mascotas</p>
+                    <p className="text-sm text-gray-600">Conexiones auténticas y duraderas</p>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => navigate('/pack')}
+                className="mt-8 inline-flex items-center gap-2 px-6 py-3 bg-amber-500 text-white font-bold rounded-lg hover:bg-amber-600 transition-all hover:shadow-2xl"
+              >
+                Ver mi Manada
+                <ArrowRight size={20} />
+              </button>
+            </div>
+
+            {/* Sección derecha - Imagen */}
+            <div className="relative h-96 rounded-2xl overflow-hidden shadow-2xl">
+              <img
+                src="/manada.png"
+                alt="Manada - Tu círculo de amigos"
+                className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
               />
             </div>
           </div>
