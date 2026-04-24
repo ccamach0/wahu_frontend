@@ -13,17 +13,20 @@ export default function ClanChatWidget({
   const [sending, setSending] = useState(false);
   const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef(null);
+  const isLoadingRef = useRef(false);
 
   useEffect(() => {
     loadMessages();
-    // Refresh messages every 5 seconds, but skip if already loading
+
+    // Refresh messages every 10 seconds, but only if not already loading
     const interval = setInterval(() => {
-      if (!loading && !sending) {
+      if (!isLoadingRef.current && !sending) {
         loadMessages();
       }
-    }, 5000);
+    }, 10000);
+
     return () => clearInterval(interval);
-  }, [clanId, loading, sending]);
+  }, [clanId]); // Only depend on clanId
 
   useEffect(() => {
     // Scroll to bottom when messages change
@@ -31,7 +34,11 @@ export default function ClanChatWidget({
   }, [messages]);
 
   const loadMessages = async () => {
+    // Prevent concurrent requests
+    if (isLoadingRef.current) return;
+
     try {
+      isLoadingRef.current = true;
       setLoading(true);
       const data = await api.getClanMessages(clanId);
       setMessages(data);
@@ -39,12 +46,13 @@ export default function ClanChatWidget({
       console.error('Error loading messages:', err);
     } finally {
       setLoading(false);
+      isLoadingRef.current = false;
     }
   };
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!messageText.trim() || sending) return;
+    if (!messageText.trim() || sending || isLoadingRef.current) return;
 
     setSending(true);
     try {
