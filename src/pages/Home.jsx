@@ -197,7 +197,7 @@ export default function Home() {
             <div className="relative h-96 rounded-2xl overflow-hidden shadow-2xl">
               <img
                 src="/chat.png"
-                alt="Videollamada en vivo"
+                alt="Interacción con la comunidad"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
               />
             </div>
@@ -205,10 +205,10 @@ export default function Home() {
             {/* Sección derecha - Texto y beneficios */}
             <div>
               <h3 className="text-3xl font-black text-gray-900 mb-6">
-                Conecta cara a cara
+                Interactúa con la comunidad
               </h3>
               <p className="text-lg text-gray-600 mb-8">
-                Las mascotas pueden hacer videollamadas en vivo con amigos, participar en reuniones de clan y compartir momentos especiales con otros en la comunidad.
+                Publica momentos especiales de tu mascota, interactúa con otros compañeros, comenta en posts, vota en tarjetas y participa en la vida social de la comunidad Wahu.
               </p>
 
               <div className="space-y-4">
@@ -217,8 +217,8 @@ export default function Home() {
                     <span className="text-white font-bold">1</span>
                   </div>
                   <div>
-                    <h4 className="font-bold text-gray-900 mb-1">Chat en tiempo real</h4>
-                    <p className="text-gray-600 text-sm">Mensajes instantáneos con tus amigos</p>
+                    <h4 className="font-bold text-gray-900 mb-1">Publica y comparte</h4>
+                    <p className="text-gray-600 text-sm">Crea posts con fotos y historias de tu mascota</p>
                   </div>
                 </div>
 
@@ -227,8 +227,8 @@ export default function Home() {
                     <span className="text-white font-bold">2</span>
                   </div>
                   <div>
-                    <h4 className="font-bold text-gray-900 mb-1">Videollamadas de grupo</h4>
-                    <p className="text-gray-600 text-sm">Reuniones con tu clan y comunidad</p>
+                    <h4 className="font-bold text-gray-900 mb-1">Comenta e interactúa</h4>
+                    <p className="text-gray-600 text-sm">Deja comentarios y vota en posts de otros</p>
                   </div>
                 </div>
 
@@ -237,8 +237,8 @@ export default function Home() {
                     <span className="text-white font-bold">3</span>
                   </div>
                   <div>
-                    <h4 className="font-bold text-gray-900 mb-1">Compartir momentos</h4>
-                    <p className="text-gray-600 text-sm">Publica fotos, videos y historias</p>
+                    <h4 className="font-bold text-gray-900 mb-1">Únete a clanes</h4>
+                    <p className="text-gray-600 text-sm">Participa en comunidades temáticas</p>
                   </div>
                 </div>
               </div>
