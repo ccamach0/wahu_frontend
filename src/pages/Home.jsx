@@ -120,7 +120,7 @@ export default function Home() {
 
             {/* Red de mascotas - Imagen profesional */}
             <div className="flex-1 hidden md:block">
-              <div className="relative h-96 flex items-center justify-center rounded-2xl overflow-hidden">
+              <div className="relative flex items-center justify-center rounded-3xl overflow-hidden shadow-2xl">
                 <img
                   src="/red.png"
                   alt="Red de mascotas conectadas"
@@ -194,7 +194,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             {/* Sección izquierda - Chat image */}
-            <div className="relative h-96 rounded-2xl overflow-hidden shadow-2xl">
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl">
               <img
                 src="/chat.png"
                 alt="Interacción con la comunidad"
@@ -361,7 +361,7 @@ export default function Home() {
             </div>
 
             {/* Sección derecha - Imagen */}
-            <div className="relative h-96 rounded-2xl overflow-hidden shadow-2xl">
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl">
               <img
                 src="/hidrante.png"
                 alt="Hidrante - Encuentra mascotas cerca de ti"
@@ -377,7 +377,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             {/* Sección izquierda - Imagen */}
-            <div className="relative h-96 rounded-2xl overflow-hidden shadow-2xl">
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl">
               <img
                 src="/certamen_1.png"
                 alt="Certamen - Competencias y desafíos"
@@ -491,7 +491,7 @@ export default function Home() {
             </div>
 
             {/* Sección derecha - Imagen */}
-            <div className="relative h-96 rounded-2xl overflow-hidden shadow-2xl">
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl">
               <img
                 src="/cita.png"
                 alt="Citas - Organiza encuentros virtuales"
@@ -507,7 +507,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             {/* Sección izquierda - Imagen */}
-            <div className="relative h-96 rounded-2xl overflow-hidden shadow-2xl">
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl">
               <img
                 src="/clan.png"
                 alt="Clanes - Comunidades temáticas"
@@ -629,7 +629,7 @@ export default function Home() {
             </div>
 
             {/* Sección derecha - Imagen */}
-            <div className="relative h-96 rounded-2xl overflow-hidden shadow-2xl">
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl">
               <img
                 src="/manada.png"
                 alt="Manada - Tu círculo de amigos"
