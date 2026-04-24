@@ -37,10 +37,12 @@ export default function Clans() {
     setError('');
     try {
       const created = await api.createClan({ ...newClan, pet_id: firstPet.id });
-      setClans([created, ...clans]);
       setMyClans([created, ...myClans]);
       setNewClan({ name: '', description: '' });
       setShowCreate(false);
+      // Refresh clans list
+      const updated = await api.getClans();
+      setClans(updated);
     } catch (err) {
       setError(err.message || 'Error al crear clan');
     } finally {
@@ -53,7 +55,12 @@ export default function Clans() {
     try {
       await api.joinClan(clan.id, firstPet.id);
       setMyClans([...myClans, clan]);
-    } catch {}
+      // Refresh the clans list to update the joined status
+      const updated = await api.getClans();
+      setClans(updated);
+    } catch (err) {
+      console.error('Error joining clan:', err);
+    }
   };
 
   return (
@@ -155,10 +162,13 @@ export default function Clans() {
 }
 
 function ClanRow({ clan, joined, onJoin, navigate }) {
-  const [isJoined, setIsJoined] = useState(joined);
-
   const handleCardClick = () => {
     navigate(`/clans/${clan.id}`);
+  };
+
+  const handleJoinClick = async (e) => {
+    e.stopPropagation();
+    await onJoin?.();
   };
 
   return (
@@ -182,10 +192,10 @@ function ClanRow({ clan, joined, onJoin, navigate }) {
             <span className="text-xs text-gray-400 flex items-center gap-1">
               <Users size={12} /> {clan.member_count || 1} miembros
             </span>
-            {!isJoined ? (
+            {!joined ? (
               <button
                 className="btn-primary text-xs py-1 px-3"
-                onClick={() => { setIsJoined(true); onJoin?.(); }}
+                onClick={handleJoinClick}
               >
                 {BUTTON_TEXT.JOIN_CLAN}
               </button>
