@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Users, MessageSquare, Image, LogOut, Trash2, Shield } from 'lucide-react';
 import api from '../services/api.js';
 import { useAuth } from '../hooks/useAuth.jsx';
@@ -11,6 +11,7 @@ import ClanChatWidget from '../components/ClanChatWidget.jsx';
 
 export default function ClanProfile() {
   const { clanId } = useParams();
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { firstPet } = useMyPets();
   const [clan, setClan] = useState(null);
@@ -19,10 +20,21 @@ export default function ClanProfile() {
   const [activeTab, setActiveTab] = useState('posts');
   const [userRole, setUserRole] = useState(null);
   const [isMember, setIsMember] = useState(false);
+  const wasInitialLoadRef = useRef(false);
 
   useEffect(() => {
     loadClan();
   }, [clanId, firstPet]);
+
+  // Redirigir si la mascota cambió y no es miembro
+  useEffect(() => {
+    if (wasInitialLoadRef.current && !loading && !isMember && firstPet) {
+      navigate('/clans', { replace: true });
+    }
+    if (!loading && isMember) {
+      wasInitialLoadRef.current = true;
+    }
+  }, [isMember, loading, firstPet, navigate]);
 
   const loadClan = async () => {
     if (!clanId) return;
