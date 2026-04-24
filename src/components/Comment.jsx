@@ -20,7 +20,7 @@ export default function Comment({ comment, isAuthor, isProfileOwner, onDelete })
         <div className={`mt-1 px-4 py-2.5 rounded-2xl break-words ${
           comment.sent_as_owner
             ? 'bg-gray-100 text-gray-700 border border-gray-200'
-            : 'bg-orange-200 text-orange-800'
+            : 'bg-wahu-100 text-wahu-700'
         }`}>
           {comment.content}
         </div>
