@@ -5,6 +5,7 @@ import { useAuth } from '../hooks/useAuth.jsx';
 import { usePetContext } from '../hooks/usePetContext.jsx';
 import ImageUpload from '../components/ImageUpload.jsx';
 import Gallery from '../components/Gallery.jsx';
+import PostsSection from '../components/PostsSection.jsx';
 import api from '../services/api.js';
 
 const SPECIES = ['Perro', 'Gato', 'Conejo', 'Pájaro', 'Hamster', 'Otro'];
@@ -61,12 +62,41 @@ export default function Companion() {
   const [userGallery, setUserGallery] = useState([]);
   const [galleryFile, setGalleryFile] = useState(null);
   const [uploadingUserGallery, setUploadingUserGallery] = useState(false);
+  const [myPosts, setMyPosts] = useState([]);
+  const [postsLoading, setPostsLoading] = useState(false);
+  const [galleryComments, setGalleryComments] = useState({});
+  const [loadingGalleryComments, setLoadingGalleryComments] = useState({});
 
   useEffect(() => {
     if (!user?.id) return;
     api.getCompanionGallery(user.id, 100)
-      .then(res => setUserGallery(res.images || []))
+      .then(res => {
+        setUserGallery(res.images || []);
+        // Cargar comentarios para todas las imágenes
+        res.images?.forEach(image => {
+          setLoadingGalleryComments(prev => ({ ...prev, [image.id]: true }));
+          api.getCompanionGalleryComments(user.id, image.id)
+            .then(commentsRes => {
+              setGalleryComments(prev => ({ ...prev, [image.id]: commentsRes.comments || [] }));
+            })
+            .catch(() => {
+              setGalleryComments(prev => ({ ...prev, [image.id]: [] }));
+            })
+            .finally(() => {
+              setLoadingGalleryComments(prev => ({ ...prev, [image.id]: false }));
+            });
+        });
+      })
       .catch(() => setUserGallery([]));
+  }, [user?.id]);
+
+  useEffect(() => {
+    if (!user?.id) return;
+    setPostsLoading(true);
+    api.getCompanionPosts(user.id, 50)
+      .then(res => setMyPosts(res.posts || []))
+      .catch(() => setMyPosts([]))
+      .finally(() => setPostsLoading(false));
   }, [user?.id]);
 
   const handleCreate = async (e) => {
@@ -278,6 +308,32 @@ export default function Companion() {
           images={userGallery}
           onDelete={handleDeleteUserGalleryImage}
           isOwner={true}
+          imageComments={galleryComments}
+          onAddComment={async (imageId, content, sent_as_owner) => {
+            try {
+              const comment = await api.createCompanionGalleryComment(user.id, imageId, content, sent_as_owner);
+              setGalleryComments(prev => ({
+                ...prev,
+                [imageId]: [...(prev[imageId] || []), comment]
+              }));
+            } catch (err) {
+              alert(err.message || 'Error al crear comentario');
+            }
+          }}
+          onDeleteComment={async (imageId, commentId) => {
+            try {
+              await api.deleteCompanionGalleryComment(user.id, imageId, commentId);
+              setGalleryComments(prev => ({
+                ...prev,
+                [imageId]: prev[imageId].filter(c => c.id !== commentId)
+              }));
+            } catch {
+              alert('Error al eliminar comentario');
+            }
+          }}
+          firstPet={activePet}
+          user={user}
+          loadingComments={loadingGalleryComments}
         />
       </div>
 
@@ -429,6 +485,52 @@ export default function Companion() {
           ))}
         </div>
       )}
+
+      {/* Mis publicaciones */}
+      <div className="mt-8 mb-5">
+        <h2 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+          💬 Mis publicaciones en el perfil
+        </h2>
+        <PostsSection
+          posts={myPosts}
+          onAddPost={async (content, sent_as_owner) => {
+            try {
+              const newPost = await api.createCompanionPost(user.id, content, sent_as_owner);
+              setMyPosts([newPost, ...myPosts]);
+            } catch (err) {
+              alert(err.message || 'Error al crear publicación');
+            }
+          }}
+          onDeletePost={async (postId) => {
+            if (!confirm('¿Eliminar publicación?')) return;
+            try {
+              await api.deleteCompanionPost(user.id, postId);
+              setMyPosts(myPosts.filter(p => p.id !== postId));
+            } catch {
+              alert('Error al eliminar publicación');
+            }
+          }}
+          onAddComment={async (postId, content, sent_as_owner) => {
+            try {
+              const newComment = await api.createCompanionPostComment(user.id, postId, content, sent_as_owner);
+              setMyPosts(myPosts.map(p => p.id === postId ? { ...p, comments: [...(p.comments || []), newComment] } : p));
+            } catch (err) {
+              alert(err.message || 'Error al crear comentario');
+            }
+          }}
+          onDeleteComment={async (postId, commentId) => {
+            try {
+              await api.deleteCompanionPostComment(user.id, postId, commentId);
+              setMyPosts(myPosts.map(p => p.id === postId ? { ...p, comments: (p.comments || []).filter(c => c.id !== commentId) } : p));
+            } catch {
+              alert('Error al eliminar comentario');
+            }
+          }}
+          firstPet={activePet}
+          user={user}
+          loading={postsLoading}
+        />
+      </div>
     </div>
   );
 }

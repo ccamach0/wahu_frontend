@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { MapPin, Users, Star, ArrowLeft, PawPrint, Shield, X } from 'lucide-react';
 import api from '../services/api.js';
 import Gallery from '../components/Gallery.jsx';
+import PostsSection from '../components/PostsSection.jsx';
 import { useAuth } from '../hooks/useAuth.jsx';
 import { useMyPets } from '../hooks/useMyPets.jsx';
 
@@ -57,6 +58,10 @@ export default function PetProfile() {
   const [editingAvatar, setEditingAvatar] = useState(false);
   const [avatarFile, setAvatarFile] = useState(null);
   const [avatarUploading, setAvatarUploading] = useState(false);
+  const [posts, setPosts] = useState([]);
+  const [postsLoading, setPostsLoading] = useState(false);
+  const [imageComments, setImageComments] = useState({});
+  const [loadingComments, setLoadingComments] = useState({});
 
   useEffect(() => {
     api.getPet(username)
@@ -67,9 +72,34 @@ export default function PetProfile() {
 
   useEffect(() => {
     if (!pet?.id) return;
+    setPostsLoading(true);
+    api.getPetPosts(pet.id, 50)
+      .then(res => setPosts(res.posts || []))
+      .catch(() => setPosts([]))
+      .finally(() => setPostsLoading(false));
+  }, [pet?.id]);
+
+  useEffect(() => {
+    if (!pet?.id) return;
     setGalleryLoading(true);
     api.getPetGallery(pet.id, 100)
-      .then(res => setGallery(res.images || []))
+      .then(res => {
+        setGallery(res.images || []);
+        // Cargar comentarios para todas las imágenes
+        res.images?.forEach(image => {
+          setLoadingComments(prev => ({ ...prev, [image.id]: true }));
+          api.getPetGalleryComments(pet.id, image.id)
+            .then(commentsRes => {
+              setImageComments(prev => ({ ...prev, [image.id]: commentsRes.comments || [] }));
+            })
+            .catch(() => {
+              setImageComments(prev => ({ ...prev, [image.id]: [] }));
+            })
+            .finally(() => {
+              setLoadingComments(prev => ({ ...prev, [image.id]: false }));
+            });
+        });
+      })
       .catch(() => setGallery([]))
       .finally(() => setGalleryLoading(false));
   }, [pet?.id]);
@@ -132,6 +162,15 @@ export default function PetProfile() {
       alert(err.message || 'Error al cambiar avatar');
     } finally {
       setAvatarUploading(false);
+    }
+  };
+
+  const handleDeleteGalleryImage = async (imageId) => {
+    try {
+      await api.deletePetGalleryImage(pet.id, imageId);
+      setGallery(gallery.filter(img => img.id !== imageId));
+    } catch (err) {
+      alert(err.message || 'Error al eliminar foto');
     }
   };
 
@@ -386,9 +425,86 @@ export default function PetProfile() {
           <h2 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
             📸 Galería
           </h2>
-          <Gallery images={gallery} loading={galleryLoading} isOwner={isOwnPet} />
+          <Gallery
+            images={gallery}
+            loading={galleryLoading}
+            isOwner={isOwnPet}
+            onDelete={handleDeleteGalleryImage}
+            imageComments={imageComments}
+            onAddComment={async (imageId, content, sent_as_owner) => {
+              try {
+                const comment = await api.createPetGalleryComment(pet.id, imageId, content, sent_as_owner);
+                setImageComments(prev => ({
+                  ...prev,
+                  [imageId]: [...(prev[imageId] || []), comment]
+                }));
+              } catch (err) {
+                alert(err.message || 'Error al crear comentario');
+              }
+            }}
+            onDeleteComment={async (imageId, commentId) => {
+              try {
+                await api.deletePetGalleryComment(pet.id, imageId, commentId);
+                setImageComments(prev => ({
+                  ...prev,
+                  [imageId]: prev[imageId].filter(c => c.id !== commentId)
+                }));
+              } catch {
+                alert('Error al eliminar comentario');
+              }
+            }}
+            firstPet={firstPet}
+            user={user}
+            loadingComments={loadingComments}
+          />
         </div>
       )}
+
+      {/* Posts */}
+      <div className="mb-5">
+        <h2 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+          💬 Publicaciones
+        </h2>
+        <PostsSection
+          posts={posts}
+          onAddPost={async (content, sent_as_owner) => {
+            try {
+              const newPost = await api.createPetPost(pet.id, content, sent_as_owner);
+              setPosts([newPost, ...posts]);
+            } catch (err) {
+              alert(err.message || 'Error al crear publicación');
+            }
+          }}
+          onDeletePost={async (postId) => {
+            if (!confirm('¿Eliminar publicación?')) return;
+            try {
+              await api.deletePetPost(pet.id, postId);
+              setPosts(posts.filter(p => p.id !== postId));
+            } catch {
+              alert('Error al eliminar publicación');
+            }
+          }}
+          onAddComment={async (postId, content, sent_as_owner) => {
+            try {
+              const newComment = await api.createPetPostComment(pet.id, postId, content, sent_as_owner);
+              setPosts(posts.map(p => p.id === postId ? { ...p, comments: [...(p.comments || []), newComment] } : p));
+            } catch (err) {
+              alert(err.message || 'Error al crear comentario');
+            }
+          }}
+          onDeleteComment={async (postId, commentId) => {
+            try {
+              await api.deletePetPostComment(pet.id, postId, commentId);
+              setPosts(posts.map(p => p.id === postId ? { ...p, comments: (p.comments || []).filter(c => c.id !== commentId) } : p));
+            } catch {
+              alert('Error al eliminar comentario');
+            }
+          }}
+          firstPet={firstPet}
+          user={user}
+          loading={postsLoading}
+        />
+      </div>
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">

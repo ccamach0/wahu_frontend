@@ -153,6 +153,80 @@ export const api = {
   // Hydrant
   getHydrant: () => request('/hydrant'),
   toggleHydrant: (petId, enabled) => request(`/hydrant/${petId}/toggle`, { method: 'PUT', body: JSON.stringify({ enabled }) }),
+
+  // Pet Posts
+  getPetPosts: (petId, limit = 20, offset = 0) =>
+    request(`/posts/pets/${petId}/posts?limit=${limit}&offset=${offset}`),
+  createPetPost: (petId, content, sent_as_owner = false) =>
+    request(`/posts/pets/${petId}/posts`, {
+      method: 'POST',
+      body: JSON.stringify({ content, sent_as_owner })
+    }),
+  deletePetPost: (petId, postId) =>
+    request(`/posts/pets/${petId}/posts/${postId}`, { method: 'DELETE' }),
+
+  // Pet Post Comments
+  getPetPostComments: (petId, postId) =>
+    request(`/posts/pets/${petId}/posts/${postId}/comments`),
+  createPetPostComment: (petId, postId, content, sent_as_owner = false) =>
+    request(`/posts/pets/${petId}/posts/${postId}/comments`, {
+      method: 'POST',
+      body: JSON.stringify({ content, sent_as_owner })
+    }),
+  deletePetPostComment: (petId, postId, commentId) =>
+    request(`/posts/pets/${petId}/posts/${postId}/comments/${commentId}`, {
+      method: 'DELETE'
+    }),
+
+  // Pet Gallery Comments
+  getPetGalleryComments: (petId, imageId) =>
+    request(`/posts/pets/${petId}/gallery/${imageId}/comments`),
+  createPetGalleryComment: (petId, imageId, content, sent_as_owner = false) =>
+    request(`/posts/pets/${petId}/gallery/${imageId}/comments`, {
+      method: 'POST',
+      body: JSON.stringify({ content, sent_as_owner })
+    }),
+  deletePetGalleryComment: (petId, imageId, commentId) =>
+    request(`/posts/pets/${petId}/gallery/${imageId}/comments/${commentId}`, {
+      method: 'DELETE'
+    }),
+
+  // Companion Posts
+  getCompanionPosts: (companionId, limit = 20, offset = 0) =>
+    request(`/posts/companions/${companionId}/posts?limit=${limit}&offset=${offset}`),
+  createCompanionPost: (companionId, content, sent_as_owner = false) =>
+    request(`/posts/companions/${companionId}/posts`, {
+      method: 'POST',
+      body: JSON.stringify({ content, sent_as_owner })
+    }),
+  deleteCompanionPost: (companionId, postId) =>
+    request(`/posts/companions/${companionId}/posts/${postId}`, { method: 'DELETE' }),
+
+  // Companion Post Comments
+  getCompanionPostComments: (companionId, postId) =>
+    request(`/posts/companions/${companionId}/posts/${postId}/comments`),
+  createCompanionPostComment: (companionId, postId, content, sent_as_owner = false) =>
+    request(`/posts/companions/${companionId}/posts/${postId}/comments`, {
+      method: 'POST',
+      body: JSON.stringify({ content, sent_as_owner })
+    }),
+  deleteCompanionPostComment: (companionId, postId, commentId) =>
+    request(`/posts/companions/${companionId}/posts/${postId}/comments/${commentId}`, {
+      method: 'DELETE'
+    }),
+
+  // Companion Gallery Comments
+  getCompanionGalleryComments: (companionId, imageId) =>
+    request(`/posts/companions/${companionId}/gallery/${imageId}/comments`),
+  createCompanionGalleryComment: (companionId, imageId, content, sent_as_owner = false) =>
+    request(`/posts/companions/${companionId}/gallery/${imageId}/comments`, {
+      method: 'POST',
+      body: JSON.stringify({ content, sent_as_owner })
+    }),
+  deleteCompanionGalleryComment: (companionId, imageId, commentId) =>
+    request(`/posts/companions/${companionId}/gallery/${imageId}/comments/${commentId}`, {
+      method: 'DELETE'
+    }),
 };
 
 export default api;

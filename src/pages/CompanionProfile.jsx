@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Users, PawPrint, ArrowLeft, UserCheck, Clock, Check, PawPrint as PawIcon } from 'lucide-react';
 import api from '../services/api.js';
+import PostsSection from '../components/PostsSection.jsx';
+import { useAuth } from '../hooks/useAuth.jsx';
 import { useMyPets } from '../hooks/useMyPets.jsx';
 
 // Estado de amistad de una mascota del compañero respecto a mi mascota activa
@@ -47,10 +49,13 @@ function useFriendshipStatus(activePet, companionPets) {
 export default function CompanionProfile() {
   const { username } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { firstPet } = useMyPets();
   const [companion, setCompanion] = useState(null);
   const [pageLoading, setPageLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState({});
+  const [posts, setPosts] = useState([]);
+  const [postsLoading, setPostsLoading] = useState(false);
 
   useEffect(() => {
     api.getCompanionProfile(username)
@@ -58,6 +63,15 @@ export default function CompanionProfile() {
       .catch(() => setCompanion(null))
       .finally(() => setPageLoading(false));
   }, [username]);
+
+  useEffect(() => {
+    if (!companion?.id) return;
+    setPostsLoading(true);
+    api.getCompanionPosts(companion.id, 50)
+      .then(res => setPosts(res.posts || []))
+      .catch(() => setPosts([]))
+      .finally(() => setPostsLoading(false));
+  }, [companion?.id]);
 
   const { statuses, loading: statusLoading, setStatuses } = useFriendshipStatus(
     firstPet,
@@ -222,6 +236,52 @@ export default function CompanionProfile() {
           })}
         </div>
       )}
+
+      {/* Posts */}
+      <div className="mt-8 mb-5">
+        <h2 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+          💬 Publicaciones
+        </h2>
+        <PostsSection
+          posts={posts}
+          onAddPost={async (content, sent_as_owner) => {
+            try {
+              const newPost = await api.createCompanionPost(companion.id, content, sent_as_owner);
+              setPosts([newPost, ...posts]);
+            } catch (err) {
+              alert(err.message || 'Error al crear publicación');
+            }
+          }}
+          onDeletePost={async (postId) => {
+            if (!confirm('¿Eliminar publicación?')) return;
+            try {
+              await api.deleteCompanionPost(companion.id, postId);
+              setPosts(posts.filter(p => p.id !== postId));
+            } catch {
+              alert('Error al eliminar publicación');
+            }
+          }}
+          onAddComment={async (postId, content, sent_as_owner) => {
+            try {
+              const newComment = await api.createCompanionPostComment(companion.id, postId, content, sent_as_owner);
+              setPosts(posts.map(p => p.id === postId ? { ...p, comments: [...(p.comments || []), newComment] } : p));
+            } catch (err) {
+              alert(err.message || 'Error al crear comentario');
+            }
+          }}
+          onDeleteComment={async (postId, commentId) => {
+            try {
+              await api.deleteCompanionPostComment(companion.id, postId, commentId);
+              setPosts(posts.map(p => p.id === postId ? { ...p, comments: (p.comments || []).filter(c => c.id !== commentId) } : p));
+            } catch {
+              alert('Error al eliminar comentario');
+            }
+          }}
+          firstPet={firstPet}
+          user={user}
+          loading={postsLoading}
+        />
+      </div>
     </div>
   );
 }
