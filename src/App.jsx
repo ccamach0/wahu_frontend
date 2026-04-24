@@ -1,8 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { useEffect } from 'react';
 import { AuthProvider } from './hooks/useAuth.jsx';
 import { PetProvider } from './hooks/usePetContext.jsx';
 import { ToastProvider } from './components/ToastProvider.jsx';
+import { logVersionInfo } from './utils/debugVersion.js';
 import Layout from './components/Layout.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
@@ -58,6 +60,10 @@ function AppRoutes() {
 }
 
 export default function App() {
+  useEffect(() => {
+    logVersionInfo();
+  }, []);
+
   if (!GOOGLE_CLIENT_ID) return <AppRoutes />;
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
