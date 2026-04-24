@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Send } from 'lucide-react';
+import { Send, User } from 'lucide-react';
 import api from '../services/api.js';
 
 export default function ClanChatWidget({
@@ -148,8 +148,10 @@ export default function ClanChatWidget({
                   ? 'bg-gray-700 text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
+              title={user?.name}
             >
-              {user?.name}
+              <User size={12} className="flex-shrink-0" />
+              <span className="hidden md:inline">{user?.name}</span>
             </button>
           </div>
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, Trash2, User } from 'lucide-react';
 import api from '../services/api.js';
 import CommentsSection from './CommentsSection.jsx';
 import Comment from './Comment.jsx';
@@ -134,8 +134,10 @@ export default function ClanPostsSection({
                   ? 'bg-gray-700 text-white shadow-sm'
                   : 'bg-gray-100 text-gray-500'
               }`}
+              title={user?.name}
             >
-              {user?.name}
+              <User size={14} className="flex-shrink-0" />
+              <span className="hidden md:inline">{user?.name}</span>
             </button>
           </div>
 
