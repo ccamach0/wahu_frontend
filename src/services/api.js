@@ -89,6 +89,74 @@ export const api = {
   joinClan: (id, pet_id) => request(`/clans/${id}/join`, { method: 'POST', body: JSON.stringify({ pet_id }) }),
   getMyClans: (pet_id) => request(`/clans/my/${pet_id}`),
 
+  // Clan Member Management
+  updateClanMemberRole: (clanId, petId, role) =>
+    request(`/clans/${clanId}/members/${petId}/role`, {
+      method: 'PUT',
+      body: JSON.stringify({ role })
+    }),
+  removeClanMember: (clanId, petId) =>
+    request(`/clans/${clanId}/members/${petId}`, { method: 'DELETE' }),
+  leaveClan: (clanId) =>
+    request(`/clans/${clanId}/leave`, { method: 'POST' }),
+
+  // Clan Posts
+  getClanPosts: (clanId, limit = 20, offset = 0) =>
+    request(`/clans/${clanId}/posts?limit=${limit}&offset=${offset}`),
+  createClanPost: (clanId, content, sent_as_owner = false) =>
+    request(`/clans/${clanId}/posts`, {
+      method: 'POST',
+      body: JSON.stringify({ content, sent_as_owner })
+    }),
+  deleteClanPost: (clanId, postId) =>
+    request(`/clans/${clanId}/posts/${postId}`, { method: 'DELETE' }),
+
+  // Clan Post Comments
+  getClanPostComments: (clanId, postId, limit = 50, offset = 0) =>
+    request(`/clans/${clanId}/posts/${postId}/comments?limit=${limit}&offset=${offset}`),
+  createClanPostComment: (clanId, postId, content, sent_as_owner = false) =>
+    request(`/clans/${clanId}/posts/${postId}/comments`, {
+      method: 'POST',
+      body: JSON.stringify({ content, sent_as_owner })
+    }),
+  deleteClanPostComment: (clanId, postId, commentId) =>
+    request(`/clans/${clanId}/posts/${postId}/comments/${commentId}`, {
+      method: 'DELETE'
+    }),
+
+  // Clan Gallery
+  uploadClanGalleryImage: (clanId, file) => {
+    const formData = new FormData();
+    formData.append('image', file);
+    return request(`/clans/${clanId}/gallery`, { method: 'POST', body: formData });
+  },
+  getClanGallery: (clanId, limit = 20, offset = 0) =>
+    request(`/clans/${clanId}/gallery?limit=${limit}&offset=${offset}`),
+  deleteClanGalleryImage: (clanId, imageId) =>
+    request(`/clans/${clanId}/gallery/${imageId}`, { method: 'DELETE' }),
+
+  // Clan Gallery Comments
+  getClanGalleryComments: (clanId, imageId, limit = 50, offset = 0) =>
+    request(`/clans/${clanId}/gallery/${imageId}/comments?limit=${limit}&offset=${offset}`),
+  createClanGalleryComment: (clanId, imageId, content, sent_as_owner = false) =>
+    request(`/clans/${clanId}/gallery/${imageId}/comments`, {
+      method: 'POST',
+      body: JSON.stringify({ content, sent_as_owner })
+    }),
+  deleteClanGalleryComment: (clanId, imageId, commentId) =>
+    request(`/clans/${clanId}/gallery/${imageId}/comments/${commentId}`, {
+      method: 'DELETE'
+    }),
+
+  // Clan Chat
+  getClanMessages: (clanId, limit = 50, offset = 0) =>
+    request(`/clans/${clanId}/messages?limit=${limit}&offset=${offset}`),
+  sendClanMessage: (clanId, content, sent_as_owner = false) =>
+    request(`/clans/${clanId}/messages`, {
+      method: 'POST',
+      body: JSON.stringify({ content, sent_as_owner })
+    }),
+
   // Friendships
   getFriendships: (petId) => request(`/friendships/${petId}`),
   getPendingRequests: (petId) => request(`/friendships/pending/${petId}`),
