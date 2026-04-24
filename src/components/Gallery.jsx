@@ -153,10 +153,10 @@ export default function Gallery({
 
       {/* Lightbox */}
       {currentImage && (
-        <div className="fixed inset-0 bg-black/75 z-50 flex flex-col items-center justify-center p-4 lightbox-overlay">
-          <div className="w-full max-w-3xl">
+        <div className="fixed inset-0 bg-black/75 z-50 flex flex-col items-center p-4 lightbox-overlay overflow-y-auto">
+          <div className="w-full max-w-3xl my-auto">
             {/* Imagen principal con controles */}
-            <div className="relative bg-black rounded-xl overflow-hidden flex items-center justify-center mb-6 shadow-2xl" style={{ maxHeight: '600px' }}>
+            <div className="relative bg-black rounded-xl overflow-hidden flex items-center justify-center mb-6 shadow-2xl" style={{ maxHeight: 'clamp(250px, 50vh, 600px)' }}>
               <img
                 key={`img-${selectedIndex}`}
                 src={currentImage.image_url}
