@@ -118,13 +118,50 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Ilustración del lado derecho */}
+            {/* Ilustración moderna del lado derecho */}
             <div className="flex-1 hidden md:block">
               <div className="relative h-96 flex items-center justify-center">
-                <div className="absolute inset-0 bg-gradient-to-br from-wahu-50 to-orange-50 rounded-3xl border border-wahu-100"></div>
-                <div className="relative text-center z-10 p-8">
-                  <div className="text-8xl mb-4">🐾</div>
-                  <p className="text-gray-600 text-lg font-medium">Conecta con mascotas increíbles</p>
+                {/* Círculos decorativos de fondo */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="absolute w-64 h-64 bg-wahu-500/5 rounded-full"></div>
+                  <div className="absolute w-48 h-48 bg-wahu-500/10 rounded-full"></div>
+                </div>
+
+                {/* Elementos principales */}
+                <div className="relative z-10 w-full h-full flex items-center justify-center">
+                  <div className="relative w-80 h-80">
+                    {/* Círculo central grande */}
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-wahu-500 rounded-full flex items-center justify-center text-white text-2xl shadow-lg">
+                      🐾
+                    </div>
+
+                    {/* Círculos alrededor (mascotas) */}
+                    <div className="absolute top-8 left-10 w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center text-3xl shadow-md hover:shadow-lg transition transform hover:scale-110">
+                      🐕
+                    </div>
+                    <div className="absolute top-12 right-8 w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl shadow-md hover:shadow-lg transition transform hover:scale-110">
+                      🐈
+                    </div>
+                    <div className="absolute bottom-12 left-12 w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center text-3xl shadow-md hover:shadow-lg transition transform hover:scale-110">
+                      🐕‍🦺
+                    </div>
+                    <div className="absolute bottom-8 right-10 w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center text-3xl shadow-md hover:shadow-lg transition transform hover:scale-110">
+                      🐇
+                    </div>
+
+                    {/* Líneas conectoras */}
+                    <svg className="absolute inset-0 w-full h-full" style={{ zIndex: 0 }}>
+                      <line x1="40%" y1="15%" x2="50%" y2="50%" stroke="#f97316" strokeWidth="2" strokeOpacity="0.3" />
+                      <line x1="70%" y1="20%" x2="50%" y2="50%" stroke="#f97316" strokeWidth="2" strokeOpacity="0.3" />
+                      <line x1="30%" y1="70%" x2="50%" y2="50%" stroke="#f97316" strokeWidth="2" strokeOpacity="0.3" />
+                      <line x1="65%" y1="75%" x2="50%" y2="50%" stroke="#f97316" strokeWidth="2" strokeOpacity="0.3" />
+                    </svg>
+                  </div>
+                </div>
+
+                {/* Texto de conexión */}
+                <div className="absolute bottom-6 left-0 right-0 text-center z-20">
+                  <p className="text-gray-600 text-base font-medium">Conecta con miles de mascotas</p>
                 </div>
               </div>
             </div>
