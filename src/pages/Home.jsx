@@ -119,7 +119,7 @@ export default function Home() {
             </div>
 
             {/* Red de mascotas - Imagen profesional */}
-            <div className="flex-1 hidden md:block">
+            <div className="w-full md:flex-1">
               <div className="relative flex items-center justify-center rounded-3xl overflow-hidden shadow-2xl">
                 <img
                   src="/red.png"
