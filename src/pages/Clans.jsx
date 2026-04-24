@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Flag, Plus, Users, TrendingUp } from 'lucide-react';
 import api from '../services/api.js';
 import { useMyPets } from '../hooks/useMyPets.jsx';
 import { BUTTON_TEXT } from '../constants/buttonText.js';
 
 export default function Clans() {
+  const navigate = useNavigate();
   const { firstPet } = useMyPets();
   const [clans, setClans] = useState([]);
   const [myClans, setMyClans] = useState([]);
@@ -105,7 +107,7 @@ export default function Clans() {
         <section className="mb-6">
           <h2 className="font-bold text-gray-800 mb-3">Mis Clanes</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {myClans.map(clan => <ClanRow key={clan.id} clan={clan} joined />)}
+            {myClans.map(clan => <ClanRow key={clan.id} clan={clan} joined navigate={navigate} />)}
           </div>
         </section>
       )}
@@ -142,6 +144,7 @@ export default function Clans() {
                 clan={clan}
                 joined={myClans.some(m => m.id === clan.id)}
                 onJoin={() => handleJoin(clan)}
+                navigate={navigate}
               />
             ))}
           </div>
@@ -151,11 +154,15 @@ export default function Clans() {
   );
 }
 
-function ClanRow({ clan, joined, onJoin }) {
+function ClanRow({ clan, joined, onJoin, navigate }) {
   const [isJoined, setIsJoined] = useState(joined);
 
+  const handleCardClick = () => {
+    navigate(`/clans/${clan.id}`);
+  };
+
   return (
-    <div className="card overflow-hidden">
+    <div className="card overflow-hidden cursor-pointer hover:shadow-lg transition" onClick={handleCardClick}>
       <div className="flex gap-4 p-4">
         <img
           src={clan.avatar_url || 'https://placedog.net/80/80'}

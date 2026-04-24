@@ -11,6 +11,7 @@ import Pets from './pages/Pets.jsx';
 import Contests from './pages/Contests.jsx';
 import Pack from './pages/Pack.jsx';
 import Clans from './pages/Clans.jsx';
+import ClanProfile from './pages/ClanProfile.jsx';
 import Cards from './pages/Cards.jsx';
 import Hydrant from './pages/Hydrant.jsx';
 import Companion from './pages/Companion.jsx';
@@ -39,6 +40,7 @@ function AppRoutes() {
             <Route path="/contests" element={<Contests />} />
             <Route path="/pack" element={<Pack />} />
             <Route path="/clans" element={<Clans />} />
+            <Route path="/clans/:clanId" element={<ClanProfile />} />
             <Route path="/cards" element={<Cards />} />
             <Route path="/hydrant" element={<Hydrant />} />
             <Route path="/companion" element={<Companion />} />
