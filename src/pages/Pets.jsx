@@ -5,6 +5,7 @@ import api from '../services/api.js';
 import PetCard from '../components/PetCard.jsx';
 import { usePetContext } from '../hooks/usePetContext.jsx';
 import { useAuth } from '../hooks/useAuth.jsx';
+import { BUTTON_TEXT } from '../constants/buttonText.js';
 
 const SPECIES = ['', 'Perro', 'Gato', 'Conejo', 'Pájaro', 'Hamster', 'Otro'];
 const SORT_OPTIONS = [
@@ -48,7 +49,7 @@ export default function Pets() {
   useEffect(() => {
     if (tab === 'pets') fetchPets(search);
     else fetchCompanions(search);
-  }, [tab]);
+  }, [tab, search, fetchPets]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -219,7 +220,7 @@ export default function Pets() {
                     <button
                       onClick={(e) => { e.stopPropagation(); handleInvite(pet); }}
                       className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity btn-primary text-xs py-1.5 px-3">
-                      🐾 Invitar a jauría
+                      {BUTTON_TEXT.INVITE_PACK}
                     </button>
                   );
                 })()}

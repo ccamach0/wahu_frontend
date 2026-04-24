@@ -4,6 +4,7 @@ import { Droplets, MapPin, PawPrint, MessageCircle, CalendarDays } from 'lucide-
 import api from '../services/api.js';
 import { useMyPets } from '../hooks/useMyPets.jsx';
 import { AppointmentModal } from './Appointments.jsx';
+import { BUTTON_TEXT } from '../constants/buttonText.js';
 
 // Avatar con fallback de inicial si la imagen falla
 function PetAvatar({ pet, size = 'md' }) {
@@ -35,6 +36,8 @@ export default function Hydrant() {
   const [pets, setPets] = useState([]);
   const [loadingPets, setLoadingPets] = useState(false);
   const [apptTarget, setApptTarget] = useState(null);
+  const [filters, setFilters] = useState({ minAge: '', maxAge: '', gender: '' });
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     if (firstPet) setEnabled(firstPet.hydrant_enabled || false);
@@ -44,10 +47,25 @@ export default function Hydrant() {
     if (!enabled) return;
     setLoadingPets(true);
     api.getHydrant()
-      .then(setPets)
+      .then(allPets => {
+        // Filtrar por edad y sexo en el frontend
+        let filtered = allPets;
+
+        if (filters.minAge) {
+          filtered = filtered.filter(p => !p.age || p.age >= parseFloat(filters.minAge));
+        }
+        if (filters.maxAge) {
+          filtered = filtered.filter(p => !p.age || p.age <= parseFloat(filters.maxAge));
+        }
+        if (filters.gender) {
+          filtered = filtered.filter(p => !p.gender || p.gender === filters.gender);
+        }
+
+        setPets(filtered);
+      })
       .catch(() => setPets([]))
       .finally(() => setLoadingPets(false));
-  }, [enabled]);
+  }, [enabled, filters]);
 
   const handleToggle = async () => {
     const next = !enabled;
@@ -97,6 +115,59 @@ export default function Hydrant() {
         </div>
       </div>
 
+      {enabled && (
+        <div className="card p-4 mb-5 bg-orange-50 border border-orange-200">
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="w-full flex items-center justify-between text-sm font-semibold text-orange-700 hover:text-orange-800 py-2"
+          >
+            <span>🔍 Filtros {showFilters ? '▼' : '▶'}</span>
+          </button>
+
+          {showFilters && (
+            <div className="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Edad mínima (años)</label>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.5"
+                  placeholder="Mín"
+                  value={filters.minAge}
+                  onChange={(e) => setFilters({ ...filters, minAge: e.target.value })}
+                  className="input text-sm w-full"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Edad máxima (años)</label>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.5"
+                  placeholder="Máx"
+                  value={filters.maxAge}
+                  onChange={(e) => setFilters({ ...filters, maxAge: e.target.value })}
+                  className="input text-sm w-full"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Sexo</label>
+                <select
+                  value={filters.gender}
+                  onChange={(e) => setFilters({ ...filters, gender: e.target.value })}
+                  className="input text-sm w-full"
+                >
+                  <option value="">Todos</option>
+                  <option value="Macho">Macho</option>
+                  <option value="Hembra">Hembra</option>
+                  <option value="No especificado">No especificado</option>
+                </select>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {!enabled ? (
         <div className="card p-10 text-center">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -105,7 +176,7 @@ export default function Hydrant() {
           <h2 className="font-bold text-gray-800 mb-2">Hidrante deshabilitado</h2>
           <p className="text-sm text-gray-500 mb-5">Habilita el hidrante para ver otras mascotas disponibles</p>
           <button onClick={handleToggle} disabled={!firstPet} className="btn-primary mx-auto disabled:opacity-50">
-            <Droplets size={18} /> Habilitar ahora
+            <Droplets size={18} /> {BUTTON_TEXT.ENABLE_HYDRANT}
           </button>
         </div>
       ) : (
@@ -168,7 +239,7 @@ export default function Hydrant() {
                       disabled={!firstPet}
                       className="flex items-center gap-1 text-xs py-1.5 px-3 rounded-xl border border-orange-200 text-orange-600 hover:bg-orange-500 hover:text-white hover:border-orange-500 transition-all disabled:opacity-40"
                       title="Proponer cita">
-                      <CalendarDays size={13} /> Cita
+                      <CalendarDays size={13} /> {BUTTON_TEXT.PROPOSE_APPT}
                     </button>
                     <button
                       onClick={() => navigate(`/chat?petId=${pet.id}`)}

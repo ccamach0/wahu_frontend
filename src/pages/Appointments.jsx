@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { CalendarDays, Clock, MapPin, Plus, Check, X, Trash2, PawPrint, ChevronLeft, ChevronRight, List } from 'lucide-react';
 import api from '../services/api.js';
 import { useMyPets } from '../hooks/useMyPets.jsx';
+import { BUTTON_TEXT } from '../constants/buttonText.js';
 
 export const APPOINTMENT_TYPES = [
   { key: 'paseo',     label: 'Paseo',      emoji: '🦮', color: 'bg-green-100 text-green-700' },
@@ -181,11 +182,11 @@ export function AppointmentModal({ open, onClose, onCreated, myPet, targetPet })
             <div className="flex gap-2 pt-1">
               <button type="button" onClick={onClose}
                 className="btn-secondary flex-1">
-                Cancelar
+                {BUTTON_TEXT.CANCEL}
               </button>
               <button type="submit" disabled={saving}
                 className="btn-primary flex-1 disabled:opacity-50">
-                {saving ? 'Enviando...' : '🐾 Enviar cita'}
+                {saving ? 'Enviando...' : BUTTON_TEXT.SEND_APPT}
               </button>
             </div>
           </form>

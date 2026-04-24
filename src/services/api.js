@@ -76,6 +76,8 @@ export const api = {
   createCard: (data) => request('/cards', { method: 'POST', body: JSON.stringify(data) }),
   pawCard: (id, pet_id) => request(`/cards/${id}/paw`, { method: 'POST', body: JSON.stringify({ pet_id }) }),
   addCardToPet: (id, pet_id) => request(`/cards/${id}/add-to-pet`, { method: 'POST', body: JSON.stringify({ pet_id }) }),
+  likeCard: (id, pet_id) => request(`/cards/${id}/like`, { method: 'POST', body: JSON.stringify({ pet_id }) }),
+  unlikeCard: (id, pet_id) => request(`/cards/${id}/like`, { method: 'DELETE', body: JSON.stringify({ pet_id }) }),
 
   // Clans
   getClans: (params = {}) => {
@@ -149,6 +151,10 @@ export const api = {
 
   // Stats
   getStats: () => request('/stats'),
+
+  // Pet Tags
+  addPetTag: (petId, tagName) => request(`/pets/${petId}/tags`, { method: 'POST', body: JSON.stringify({ tag_name: tagName }) }),
+  removePetTag: (petId, tagName) => request(`/pets/${petId}/tags/${encodeURIComponent(tagName)}`, { method: 'DELETE' }),
 
   // Hydrant
   getHydrant: () => request('/hydrant'),

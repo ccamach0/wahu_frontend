@@ -6,9 +6,12 @@ import { usePetContext } from '../hooks/usePetContext.jsx';
 import ImageUpload from '../components/ImageUpload.jsx';
 import Gallery from '../components/Gallery.jsx';
 import PostsSection from '../components/PostsSection.jsx';
+import TagEditor from '../components/TagEditor.jsx';
 import api from '../services/api.js';
+import { BUTTON_TEXT } from '../constants/buttonText.js';
 
 const SPECIES = ['Perro', 'Gato', 'Conejo', 'Pájaro', 'Hamster', 'Otro'];
+const GENDERS = ['Macho', 'Hembra', 'No especificado'];
 
 function ConfirmModal({ pet, onConfirm, onCancel }) {
   return (
@@ -31,13 +34,13 @@ function ConfirmModal({ pet, onConfirm, onCancel }) {
             onClick={onConfirm}
             className="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold text-sm py-2.5 rounded-xl transition-colors"
           >
-            Sí, eliminar
+            {BUTTON_TEXT.DELETE}
           </button>
           <button
             onClick={onCancel}
             className="flex-1 btn-secondary text-sm py-2.5"
           >
-            Cancelar
+            {BUTTON_TEXT.CANCEL}
           </button>
         </div>
       </div>
@@ -50,7 +53,7 @@ export default function Companion() {
   const { user } = useAuth();
   const { pets, activePet, setActivePet, addPet, removePet, loading } = usePetContext();
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ name: '', username: '', breed: '', species: 'Perro', location: '', bio: '' });
+  const [form, setForm] = useState({ name: '', username: '', breed: '', species: 'Perro', location: '', bio: '', age: '', gender: 'Macho' });
   const [imageFile, setImageFile] = useState(null);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
@@ -66,6 +69,8 @@ export default function Companion() {
   const [postsLoading, setPostsLoading] = useState(false);
   const [galleryComments, setGalleryComments] = useState({});
   const [loadingGalleryComments, setLoadingGalleryComments] = useState({});
+  const [petTags, setPetTags] = useState({});
+  const [expandedPetTags, setExpandedPetTags] = useState(null);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -129,13 +134,15 @@ export default function Companion() {
       data.append('species', form.species);
       data.append('location', form.location);
       data.append('bio', form.bio);
+      data.append('age', form.age);
+      data.append('gender', form.gender);
       if (imageFile) {
         data.append('image', imageFile);
       }
 
       const newPet = await api.createPet(data);
       addPet(newPet);
-      setForm({ name: '', username: '', breed: '', species: 'Perro', location: '', bio: '' });
+      setForm({ name: '', username: '', breed: '', species: 'Perro', location: '', bio: '', age: '', gender: 'Macho' });
       setImageFile(null);
       setShowForm(false);
     } catch (err) {
@@ -200,6 +207,30 @@ export default function Companion() {
     }
   };
 
+  const handleAddPetTag = (petId) => async (tagName) => {
+    try {
+      await api.addPetTag(petId, tagName);
+      setPetTags(prev => ({
+        ...prev,
+        [petId]: [...(prev[petId] || []), tagName]
+      }));
+    } catch (err) {
+      alert(err.message || 'Error al agregar tag');
+    }
+  };
+
+  const handleRemovePetTag = (petId) => async (tagName) => {
+    try {
+      await api.removePetTag(petId, tagName);
+      setPetTags(prev => ({
+        ...prev,
+        [petId]: (prev[petId] || []).filter(t => t !== tagName)
+      }));
+    } catch (err) {
+      alert(err.message || 'Error al eliminar tag');
+    }
+  };
+
   return (
     <div className="max-w-2xl mx-auto px-6 py-8">
       {petToDelete && (
@@ -227,7 +258,7 @@ export default function Companion() {
             }}
             className="text-sm btn-secondary py-1.5"
           >
-            {editingProfile ? 'Cancelar' : 'Editar'}
+            {editingProfile ? BUTTON_TEXT.CANCEL : 'Editar'}
           </button>
         </div>
 
@@ -287,7 +318,7 @@ export default function Companion() {
               disabled={profileSaving}
               className="btn-primary w-full"
             >
-              {profileSaving ? 'Guardando...' : 'Guardar cambios'}
+              {profileSaving ? 'Guardando...' : BUTTON_TEXT.SAVE}
             </button>
           </form>
         )}
@@ -318,7 +349,7 @@ export default function Companion() {
             disabled={!galleryFile || uploadingUserGallery}
             className="btn-primary text-sm py-2 px-4 disabled:opacity-50"
           >
-            {uploadingUserGallery ? 'Subiendo...' : 'Subir'}
+            {uploadingUserGallery ? 'Subiendo...' : BUTTON_TEXT.UPLOAD}
           </button>
         </div>
         <Gallery
@@ -359,7 +390,7 @@ export default function Companion() {
         <h2 className="font-bold text-gray-800">Mis mascotas</h2>
         <button onClick={() => setShowForm(!showForm)} className="btn-primary text-sm py-2">
           <Plus size={16} />
-          Agregar mascota
+          + {BUTTON_TEXT.CREATE}
         </button>
       </div>
 
@@ -386,6 +417,16 @@ export default function Companion() {
             <div>
               <label className="block text-xs font-medium text-gray-600 mb-1">Raza</label>
               <input className="input text-sm" placeholder="Golden Retriever" value={form.breed} onChange={e => setForm({ ...form, breed: e.target.value })} />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">Edad (años)</label>
+              <input type="number" min="0" step="0.5" className="input text-sm" placeholder="2.5" value={form.age} onChange={e => setForm({ ...form, age: e.target.value })} />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">Sexo</label>
+              <select className="input text-sm" value={form.gender} onChange={e => setForm({ ...form, gender: e.target.value })}>
+                {GENDERS.map(g => <option key={g}>{g}</option>)}
+              </select>
             </div>
             <div className="col-span-2">
               <label className="block text-xs font-medium text-gray-600 mb-1">Ubicación</label>
@@ -424,10 +465,10 @@ export default function Companion() {
             </div>
             <div className="col-span-2 flex gap-3 pt-1">
               <button type="submit" disabled={saving} className="btn-primary text-sm py-2 flex-1">
-                <PawPrint size={16} /> {saving ? 'Creando...' : 'Crear mascota'}
+                <PawPrint size={16} /> {saving ? 'Creando...' : BUTTON_TEXT.CREATE}
               </button>
               <button type="button" className="btn-secondary text-sm py-2" onClick={() => setShowForm(false)}>
-                Cancelar
+                {BUTTON_TEXT.CANCEL}
               </button>
             </div>
           </form>
@@ -456,48 +497,68 @@ export default function Companion() {
       ) : (
         <div className="flex flex-col gap-3">
           {pets.map(pet => (
-            <div key={pet.id} className="card flex items-center gap-4 p-4">
-              <button
-                onClick={() => navigate(`/pets/${pet.username}`)}
-                className="flex-shrink-0 group relative">
-                <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-wahu-100 group-hover:border-wahu-400 transition-colors">
-                  {pet.avatar_url ? (
-                    <img src={pet.avatar_url} alt={pet.name}
-                      className="w-full h-full object-cover"
-                      onError={e => {
-                        e.target.style.display = 'none';
-                        e.target.nextSibling?.classList.remove('hidden');
-                      }} />
-                  ) : null}
-                  <div className={`${pet.avatar_url ? 'hidden' : ''} w-full h-full bg-gradient-to-br from-wahu-400 to-orange-500 flex items-center justify-center text-white text-xl font-bold`}>
-                    {pet.name[0].toUpperCase()}
+            <div key={pet.id} className="flex flex-col">
+              <div className="card flex items-center gap-4 p-4">
+                <button
+                  onClick={() => navigate(`/pets/${pet.username}`)}
+                  className="flex-shrink-0 group relative">
+                  <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-wahu-100 group-hover:border-wahu-400 transition-colors">
+                    {pet.avatar_url ? (
+                      <img src={pet.avatar_url} alt={pet.name}
+                        className="w-full h-full object-cover"
+                        onError={e => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling?.classList.remove('hidden');
+                        }} />
+                    ) : null}
+                    <div className={`${pet.avatar_url ? 'hidden' : ''} w-full h-full bg-gradient-to-br from-wahu-400 to-orange-500 flex items-center justify-center text-white text-xl font-bold`}>
+                      {pet.name[0].toUpperCase()}
+                    </div>
                   </div>
+                </button>
+                <div className="flex-1 min-w-0">
+                  <button onClick={() => navigate(`/pets/${pet.username}`)}
+                    className="font-bold text-gray-800 hover:text-wahu-600 transition-colors flex items-center gap-1">
+                    {pet.name} <ExternalLink size={12} className="opacity-40" />
+                  </button>
+                  <p className="text-xs text-wahu-500">@{pet.username}</p>
+                  <p className="text-xs text-gray-400">{pet.species} · {pet.breed}</p>
                 </div>
-              </button>
-              <div className="flex-1 min-w-0">
-                <button onClick={() => navigate(`/pets/${pet.username}`)}
-                  className="font-bold text-gray-800 hover:text-wahu-600 transition-colors flex items-center gap-1">
-                  {pet.name} <ExternalLink size={12} className="opacity-40" />
-                </button>
-                <p className="text-xs text-wahu-500">@{pet.username}</p>
-                <p className="text-xs text-gray-400">{pet.species} · {pet.breed}</p>
+                <div className="flex items-center gap-2">
+                  <span className="badge bg-wahu-100 text-wahu-600">Nv.{pet.level}</span>
+                  <button
+                    onClick={() => setActivePet(pet)}
+                    title={activePet?.id === pet.id ? 'Mascota activa' : 'Seleccionar como activa'}
+                    className={`p-1.5 rounded-lg transition-colors ${activePet?.id === pet.id ? 'text-wahu-500 bg-wahu-50' : 'text-gray-300 hover:text-wahu-400 hover:bg-wahu-50'}`}
+                  >
+                    <Star size={15} fill={activePet?.id === pet.id ? 'currentColor' : 'none'} />
+                  </button>
+                  <button
+                    onClick={() => setExpandedPetTags(expandedPetTags === pet.id ? null : pet.id)}
+                    title="Gestionar tags"
+                    className="p-1.5 hover:bg-wahu-50 rounded-lg text-gray-400 hover:text-wahu-500 transition-colors"
+                  >
+                    <PawPrint size={15} />
+                  </button>
+                  <button
+                    onClick={() => setPetToDelete(pet)}
+                    className="p-1.5 hover:bg-red-50 rounded-lg text-gray-400 hover:text-red-500 transition-colors"
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="badge bg-wahu-100 text-wahu-600">Nv.{pet.level}</span>
-                <button
-                  onClick={() => setActivePet(pet)}
-                  title={activePet?.id === pet.id ? 'Mascota activa' : 'Seleccionar como activa'}
-                  className={`p-1.5 rounded-lg transition-colors ${activePet?.id === pet.id ? 'text-wahu-500 bg-wahu-50' : 'text-gray-300 hover:text-wahu-400 hover:bg-wahu-50'}`}
-                >
-                  <Star size={15} fill={activePet?.id === pet.id ? 'currentColor' : 'none'} />
-                </button>
-                <button
-                  onClick={() => setPetToDelete(pet)}
-                  className="p-1.5 hover:bg-red-50 rounded-lg text-gray-400 hover:text-red-500 transition-colors"
-                >
-                  <Trash2 size={15} />
-                </button>
-              </div>
+              {expandedPetTags === pet.id && (
+                <div className="p-4 bg-white border-l-4 border-wahu-500">
+                  <TagEditor
+                    tags={petTags[pet.id] || []}
+                    onAddTag={handleAddPetTag(pet.id)}
+                    onRemoveTag={handleRemovePetTag(pet.id)}
+                    isOwner={true}
+                    disabled={false}
+                  />
+                </div>
+              )}
             </div>
           ))}
         </div>

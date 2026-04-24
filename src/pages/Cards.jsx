@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Tag, Search, Shuffle, Plus } from 'lucide-react';
 import api from '../services/api.js';
 import { useMyPets } from '../hooks/useMyPets.jsx';
+import CardDisplay from '../components/CardDisplay.jsx';
+import { BUTTON_TEXT } from '../constants/buttonText.js';
 
 const CATEGORIES = ['Todas', 'Personalidad', 'Salud', 'Comportamiento', 'Habilidades', 'Energía'];
 
@@ -20,8 +22,17 @@ export default function Cards() {
   const [category, setCategory] = useState('Todas');
   const [search, setSearch] = useState('');
   const [showCreate, setShowCreate] = useState(false);
-  const [newCard, setNewCard] = useState({ name: '', category: 'Personalidad' });
+  const [newCard, setNewCard] = useState({
+    name: '',
+    category: 'Personalidad',
+    card_type: 'simple',
+    value1_name: '',
+    value1_value: '',
+    value2_name: '',
+    value2_value: '',
+  });
   const [voted, setVoted] = useState(new Set());
+  const [liked, setLiked] = useState(new Set());
   const [added, setAdded] = useState(new Set());
 
   const fetchCards = (params = {}) => {
@@ -58,14 +69,52 @@ export default function Cards() {
     } catch {}
   };
 
+  const handleLike = async (card) => {
+    if (liked.has(card.id) || !firstPet) return;
+    setLiked(new Set([...liked, card.id]));
+    setCards(
+      cards.map(c =>
+        c.id === card.id ? { ...c, like_count: (c.like_count || 0) + 1 } : c
+      )
+    );
+    try {
+      const { like_count } = await api.likeCard(card.id, firstPet.id);
+      setCards(prev =>
+        prev.map(c => (c.id === card.id ? { ...c, like_count } : c))
+      );
+    } catch {
+      // Revertir si falla
+      setLiked(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(card.id);
+        return newSet;
+      });
+      setCards(
+        cards.map(c =>
+          c.id === card.id ? { ...c, like_count: (c.like_count || 0) - 1 } : c
+        )
+      );
+    }
+  };
+
   const handleCreate = async () => {
     if (!newCard.name || !firstPet) return;
     try {
       const created = await api.createCard({ ...newCard, pet_id: firstPet.id });
       setCards([created, ...cards]);
-      setNewCard({ name: '', category: 'Personalidad' });
+      setNewCard({
+        name: '',
+        category: 'Personalidad',
+        card_type: 'simple',
+        value1_name: '',
+        value1_value: '',
+        value2_name: '',
+        value2_value: '',
+      });
       setShowCreate(false);
-    } catch {}
+    } catch (err) {
+      alert(err.message || 'Error al crear tarjeta');
+    }
   };
 
   return (
@@ -94,13 +143,13 @@ export default function Cards() {
           />
         </div>
         <button className="btn-primary text-sm py-2" onClick={() => fetchCards({ sort: 'popular' })}>
-          <TrendingUpIcon /> Populares
+          <TrendingUpIcon /> {BUTTON_TEXT.POPULAR}
         </button>
         <button className="btn-secondary text-sm py-2" onClick={() => fetchCards({ sort: 'random' })}>
-          <Shuffle size={15} /> Aleatorio
+          <Shuffle size={15} /> {BUTTON_TEXT.RANDOM}
         </button>
         <button className="btn-primary text-sm py-2" onClick={() => setShowCreate(!showCreate)}>
-          <Plus size={15} /> Crear
+          <Plus size={15} /> + {BUTTON_TEXT.CREATE_CARD}
         </button>
       </div>
 
@@ -108,21 +157,91 @@ export default function Cards() {
         <div className="card p-5 mb-5 border-2 border-wahu-200">
           <h3 className="font-bold text-gray-800 mb-3">Nueva tarjeta</h3>
           {!firstPet && <p className="text-xs text-amber-600 mb-3">Necesitas una mascota para crear tarjetas</p>}
-          <div className="flex gap-3">
-            <input
-              className="input flex-1 text-sm"
-              placeholder="Nombre de la tarjeta"
-              value={newCard.name}
-              onChange={e => setNewCard({ ...newCard, name: e.target.value })}
-            />
-            <select
-              className="input w-40 text-sm"
-              value={newCard.category}
-              onChange={e => setNewCard({ ...newCard, category: e.target.value })}
-            >
-              {CATEGORIES.filter(c => c !== 'Todas').map(c => <option key={c}>{c}</option>)}
-            </select>
-            <button className="btn-primary text-sm py-2 px-4" onClick={handleCreate} disabled={!firstPet}>Crear</button>
+
+          <div className="space-y-3">
+            <div className="flex gap-3">
+              <input
+                className="input flex-1 text-sm"
+                placeholder="Nombre de la tarjeta"
+                value={newCard.name}
+                onChange={e => setNewCard({ ...newCard, name: e.target.value })}
+              />
+              <select
+                className="input w-32 text-sm"
+                value={newCard.category}
+                onChange={e => setNewCard({ ...newCard, category: e.target.value })}
+              >
+                {CATEGORIES.filter(c => c !== 'Todas').map(c => <option key={c}>{c}</option>)}
+              </select>
+            </div>
+
+            {/* Selector de tipo de tarjeta */}
+            <div className="flex gap-2">
+              <select
+                className="input flex-1 text-sm"
+                value={newCard.card_type}
+                onChange={e => setNewCard({ ...newCard, card_type: e.target.value })}
+              >
+                <option value="simple">Simple (solo nombre)</option>
+                <option value="doble">Doble (nombre + 1 valor)</option>
+                <option value="triple">Triple (nombre + 2 valores)</option>
+              </select>
+            </div>
+
+            {/* Campos condicionales según tipo */}
+            {newCard.card_type === 'doble' && (
+              <div className="grid grid-cols-2 gap-2 bg-wahu-50 p-3 rounded-lg">
+                <input
+                  className="input text-sm"
+                  placeholder="Nombre del atributo"
+                  value={newCard.value1_name}
+                  onChange={e => setNewCard({ ...newCard, value1_name: e.target.value })}
+                />
+                <input
+                  className="input text-sm"
+                  placeholder="Valor (ej: Alto, 85/100)"
+                  value={newCard.value1_value}
+                  onChange={e => setNewCard({ ...newCard, value1_value: e.target.value })}
+                />
+              </div>
+            )}
+
+            {newCard.card_type === 'triple' && (
+              <div className="space-y-2 bg-wahu-50 p-3 rounded-lg">
+                <div className="grid grid-cols-2 gap-2">
+                  <input
+                    className="input text-sm"
+                    placeholder="Atributo 1"
+                    value={newCard.value1_name}
+                    onChange={e => setNewCard({ ...newCard, value1_name: e.target.value })}
+                  />
+                  <input
+                    className="input text-sm"
+                    placeholder="Valor 1"
+                    value={newCard.value1_value}
+                    onChange={e => setNewCard({ ...newCard, value1_value: e.target.value })}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <input
+                    className="input text-sm"
+                    placeholder="Atributo 2"
+                    value={newCard.value2_name}
+                    onChange={e => setNewCard({ ...newCard, value2_name: e.target.value })}
+                  />
+                  <input
+                    className="input text-sm"
+                    placeholder="Valor 2"
+                    value={newCard.value2_value}
+                    onChange={e => setNewCard({ ...newCard, value2_value: e.target.value })}
+                  />
+                </div>
+              </div>
+            )}
+
+            <button className="btn-primary w-full text-sm py-2" onClick={handleCreate} disabled={!firstPet}>
+              {BUTTON_TEXT.CREATE}
+            </button>
           </div>
         </div>
       )}
@@ -152,36 +271,32 @@ export default function Cards() {
           {filtered.map((card) => {
             const colors = CARD_COLORS[card.category] || CARD_COLORS.Personalidad;
             const hasVoted = voted.has(card.id);
+            const hasLiked = liked.has(card.id);
             const hasAdded = added.has(card.id);
+
             return (
-              <div key={card.id} className={`card p-5 ${colors.bg} border ${colors.border}`}>
-                <div className="flex items-start justify-between mb-2">
-                  <span className={`badge text-xs ${colors.badge}`}>{card.category}</span>
-                </div>
-                <h3 className={`font-bold text-base mb-1 ${colors.text}`}>{card.name}</h3>
-                <p className="text-xs text-gray-400 mb-4">Creado por @{card.creator_username || 'wahu'}</p>
-                <div className="flex items-center justify-between">
-                  <button
-                    onClick={() => handlePaw(card)}
-                    disabled={!firstPet}
-                    className={`flex items-center gap-1.5 text-sm font-semibold px-3 py-1.5 rounded-lg transition-all ${
-                      hasVoted ? 'bg-wahu-500 text-white' : 'bg-white text-gray-600 hover:bg-wahu-50 hover:text-wahu-500'
-                    } disabled:opacity-50`}
-                  >
-                    🐾 {Number(card.paw_count) || 0}
-                  </button>
-                  <button
-                    onClick={() => handleAdd(card)}
-                    disabled={!firstPet || hasAdded}
-                    className={`text-xs py-1.5 px-3 rounded-lg border transition-all ${
-                      hasAdded
-                        ? 'bg-green-100 text-green-700 border-green-200'
-                        : 'bg-white text-gray-600 border-gray-200 hover:border-wahu-300 hover:text-wahu-500'
-                    } disabled:opacity-50`}
-                  >
-                    {hasAdded ? '✓ Agregada' : 'Agregar'}
-                  </button>
-                </div>
+              <div key={card.id}>
+                <CardDisplay
+                  card={card}
+                  colors={colors}
+                  hasVoted={hasVoted}
+                  hasLiked={hasLiked}
+                  onVote={() => handlePaw(card)}
+                  onLike={() => handleLike(card)}
+                  disabled={!firstPet}
+                  firstPet={firstPet}
+                />
+                <button
+                  onClick={() => handleAdd(card)}
+                  disabled={!firstPet || hasAdded}
+                  className={`w-full text-xs py-1.5 px-3 rounded-b-lg border-t-0 border transition-all mt-0 ${
+                    hasAdded
+                      ? 'bg-green-100 text-green-700 border-green-200'
+                      : 'bg-white text-gray-600 border-gray-200 hover:border-wahu-300 hover:text-wahu-500'
+                  } disabled:opacity-50`}
+                >
+                  {hasAdded ? BUTTON_TEXT.CARD_ADDED : BUTTON_TEXT.ADD_CARD}
+                </button>
               </div>
             );
           })}

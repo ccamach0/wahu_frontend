@@ -4,6 +4,7 @@ import { Shield, ChevronUp, ChevronDown, Users, Bell, Check, X, MessageCircle, S
 import api from '../services/api.js';
 import { useMyPets } from '../hooks/useMyPets.jsx';
 import { AppointmentModal } from './Appointments.jsx';
+import { BUTTON_TEXT } from '../constants/buttonText.js';
 
 const MEDAL = { 1: '🥇', 2: '🥈', 3: '🥉' };
 
@@ -206,7 +207,7 @@ export default function Pack() {
                 </button>
                 <button onClick={() => removeFromManada(pet)}
                   className="text-xs text-red-400 hover:text-red-600 font-medium px-2 transition-colors">
-                  Quitar
+                  {BUTTON_TEXT.REMOVE_PACK}
                 </button>
               </div>
             ))
@@ -244,7 +245,7 @@ export default function Pack() {
                     className="flex items-center gap-1 text-xs py-1.5 px-3 rounded-xl font-medium border border-wahu-200 text-wahu-600 hover:bg-wahu-500 hover:text-white hover:border-wahu-500 transition-all disabled:opacity-40"
                     disabled={manada.length >= 20}
                     title={manada.length >= 20 ? 'Manada llena (máx. 20)' : 'Elevar a Manada'}>
-                    <Star size={11} /> Manada
+                    <Star size={11} /> {BUTTON_TEXT.INVITE_PACK}
                   </button>
                 )}
                 <button onClick={() => deleteFromJauria(pet)}

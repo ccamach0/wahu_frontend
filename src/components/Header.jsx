@@ -68,7 +68,7 @@ export default function Header({ onMenuToggle }) {
   };
 
   return (
-    <header className="h-14 bg-white border-b border-wahu-100 flex items-center justify-end px-4 gap-3 sticky top-0 z-20">
+    <header className="h-14 bg-white border-b border-wahu-100 flex items-center justify-end px-2 sm:px-4 gap-2 sm:gap-3 sticky top-0 z-20">
       {/* Hamburger — solo móvil */}
       <button
         onClick={onMenuToggle}
@@ -93,7 +93,7 @@ export default function Header({ onMenuToggle }) {
         </button>
 
         {notifOpen && (
-          <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-2xl shadow-lg border border-wahu-100 overflow-hidden z-30">
+          <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 bg-white rounded-xl sm:rounded-2xl shadow-lg border border-wahu-100 overflow-hidden z-30">
             <div className="px-4 py-3 border-b border-wahu-50 flex items-center justify-between">
               <p className="text-sm font-bold text-gray-800">Notificaciones</p>
               {notifications.length > 0 && (
@@ -134,32 +134,32 @@ export default function Header({ onMenuToggle }) {
       </div>
 
       {/* Selector de mascota activa */}
-      <div className="relative" ref={petRef}>
+      <div className="relative hidden sm:block" ref={petRef}>
         <button
           onClick={() => pets.length > 0 ? setPetOpen(!petOpen) : navigate('/companion')}
-          className="flex items-center gap-2.5 bg-wahu-50 hover:bg-wahu-100 border border-wahu-100 rounded-xl px-3 py-1.5 transition-colors"
+          className="flex items-center gap-2 bg-wahu-50 hover:bg-wahu-100 border border-wahu-100 rounded-lg sm:rounded-xl px-2 sm:px-3 py-1.5 transition-colors"
         >
           {activePet ? (
             <>
               <img
                 src={activePet.avatar_url || 'https://placedog.net/32/32'}
                 alt={activePet.name}
-                className="w-7 h-7 rounded-lg object-cover border-2 border-wahu-200 flex-shrink-0"
+                className="w-6 sm:w-7 h-6 sm:h-7 rounded object-cover border-2 border-wahu-200 flex-shrink-0"
                 onError={e => { e.target.src = 'https://placedog.net/32/32'; }}
               />
-              <div className="text-left">
+              <div className="text-left hidden sm:block">
                 <p className="text-xs font-bold text-gray-800 leading-tight">{activePet.name}</p>
                 <p className="text-xs text-wahu-500 leading-tight">Nivel {activePet.level}</p>
               </div>
-              <ChevronDown size={14} className={`text-gray-400 transition-transform ${petOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown size={14} className={`text-gray-400 transition-transform hidden sm:block ${petOpen ? 'rotate-180' : ''}`} />
             </>
           ) : (
-            <span className="text-xs text-wahu-500 font-medium">+ Agregar mascota</span>
+            <span className="text-xs text-wahu-500 font-medium">+ Mascota</span>
           )}
         </button>
 
         {petOpen && pets.length > 0 && (
-          <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl shadow-lg border border-wahu-100 overflow-hidden z-30">
+          <div className="absolute right-0 top-full mt-2 w-48 sm:w-56 bg-white rounded-xl sm:rounded-2xl shadow-lg border border-wahu-100 overflow-hidden z-30">
             <div className="px-3 py-2 border-b border-wahu-50">
               <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Mis mascotas</p>
             </div>
@@ -198,16 +198,17 @@ export default function Header({ onMenuToggle }) {
 
       {/* Compañero (usuario) */}
       <div
-        className="flex items-center gap-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-100 rounded-xl px-3 py-1.5 cursor-pointer transition-colors"
+        className="flex items-center gap-1.5 sm:gap-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-100 rounded-lg sm:rounded-xl px-2 sm:px-3 py-1.5 cursor-pointer transition-colors"
         onClick={() => navigate('/companion')}
+        title={user?.name}
       >
         <img
           src={user?.avatar_url || `https://i.pravatar.cc/40?u=${user?.email}`}
           alt={user?.name}
-          className="w-7 h-7 rounded-full object-cover flex-shrink-0"
+          className="w-6 sm:w-7 h-6 sm:h-7 rounded-full object-cover flex-shrink-0"
           onError={e => { e.target.src = `https://i.pravatar.cc/40`; }}
         />
-        <p className="text-xs font-semibold text-gray-700 max-w-32 truncate">{user?.name || 'Compañero'}</p>
+        <p className="text-xs font-semibold text-gray-700 max-w-24 sm:max-w-32 truncate hidden xs:inline">{user?.name || 'Compañero'}</p>
       </div>
     </header>
   );

@@ -4,8 +4,10 @@ import { MapPin, Users, Star, ArrowLeft, PawPrint, Shield, X } from 'lucide-reac
 import api from '../services/api.js';
 import Gallery from '../components/Gallery.jsx';
 import PostsSection from '../components/PostsSection.jsx';
+import TagEditor from '../components/TagEditor.jsx';
 import { useAuth } from '../hooks/useAuth.jsx';
 import { useMyPets } from '../hooks/useMyPets.jsx';
+import { BUTTON_TEXT } from '../constants/buttonText.js';
 
 const CARD_COLORS = {
   Personalidad: 'bg-pink-100 text-pink-700',
@@ -62,6 +64,8 @@ export default function PetProfile() {
   const [postsLoading, setPostsLoading] = useState(false);
   const [imageComments, setImageComments] = useState({});
   const [loadingComments, setLoadingComments] = useState({});
+  const [tags, setTags] = useState([]);
+  const [tagsLoading, setTagsLoading] = useState(false);
 
   useEffect(() => {
     api.getPet(username)
@@ -203,6 +207,26 @@ export default function PetProfile() {
     }
   };
 
+  const handleAddTag = async (tagName) => {
+    if (!pet || !isOwnPet) return;
+    try {
+      await api.addPetTag(pet.id, tagName);
+      setTags([...tags, tagName]);
+    } catch (err) {
+      alert(err.message || 'Error al agregar tag');
+    }
+  };
+
+  const handleRemoveTag = async (tagName) => {
+    if (!pet || !isOwnPet) return;
+    try {
+      await api.removePetTag(pet.id, tagName);
+      setTags(tags.filter(t => t !== tagName));
+    } catch (err) {
+      alert(err.message || 'Error al eliminar tag');
+    }
+  };
+
   if (loading) return (
     <div className="max-w-2xl mx-auto px-6 py-8">
       <div className="card animate-pulse">
@@ -234,25 +258,25 @@ export default function PetProfile() {
     if (status === 'friends') return (
       <button onClick={handleRemove} disabled={actionLoading}
         className="flex items-center gap-1.5 text-sm py-2 px-4 border border-red-200 text-red-400 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors disabled:opacity-50">
-        <X size={14} /> Quitar de jauría
+        <X size={14} /> {BUTTON_TEXT.REMOVE_FRIEND}
       </button>
     );
     if (status === 'sent') return (
       <span className="flex items-center gap-1.5 text-sm py-2 px-4 bg-amber-50 text-amber-600 border border-amber-200 rounded-xl">
-        <Shield size={14} /> Solicitud enviada
+        <Shield size={14} /> {BUTTON_TEXT.SENT_REQUEST}
       </span>
     );
     if (status === 'received') return (
       <button onClick={handleAccept} disabled={actionLoading}
         className="flex items-center gap-1.5 btn-primary text-sm py-2 px-4 disabled:opacity-50">
-        <Shield size={14} /> Aceptar en jauría
+        <Shield size={14} /> {BUTTON_TEXT.ACCEPT_FRIEND}
       </button>
     );
     // none
     return (
       <button onClick={handleInvite} disabled={actionLoading}
         className="flex items-center gap-1.5 btn-primary text-sm py-2 px-4 disabled:opacity-50">
-        <Shield size={14} /> {actionLoading ? '...' : 'Invitar a jauría'}
+        <Shield size={14} /> {actionLoading ? '...' : BUTTON_TEXT.INVITE_PACK}
       </button>
     );
   };
@@ -316,7 +340,7 @@ export default function PetProfile() {
                   disabled={!avatarFile || avatarUploading}
                   className="bg-green-500 hover:bg-green-600 text-white text-xs px-3 py-1 rounded-full font-medium disabled:opacity-50"
                 >
-                  {avatarUploading ? '...' : 'Guardar'}
+                  {avatarUploading ? '...' : BUTTON_TEXT.SAVE}
                 </button>
                 <button
                   onClick={() => {
@@ -325,7 +349,7 @@ export default function PetProfile() {
                   }}
                   className="bg-gray-400 hover:bg-gray-500 text-white text-xs px-3 py-1 rounded-full font-medium"
                 >
-                  Cancelar
+                  {BUTTON_TEXT.CANCEL}
                 </button>
               </div>
             )}
@@ -385,6 +409,17 @@ export default function PetProfile() {
         </div>
       </div>
 
+      {/* Etiquetas personales */}
+      <div className="mb-5">
+        <TagEditor
+          tags={tags}
+          onAddTag={handleAddTag}
+          onRemoveTag={handleRemoveTag}
+          isOwner={isOwnPet}
+          disabled={tagsLoading}
+        />
+      </div>
+
       {/* Tarjetas */}
       {pet.cards && pet.cards.length > 0 && (
         <div className="card p-5 mb-5">
@@ -430,7 +465,7 @@ export default function PetProfile() {
               disabled={!galleryFile || uploadingGallery}
               className="btn-primary text-sm py-2 px-4 disabled:opacity-50"
             >
-              {uploadingGallery ? 'Subiendo...' : 'Subir'}
+              {uploadingGallery ? 'Subiendo...' : BUTTON_TEXT.UPLOAD}
             </button>
           </div>
         </div>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Flag, Plus, Users, TrendingUp } from 'lucide-react';
 import api from '../services/api.js';
 import { useMyPets } from '../hooks/useMyPets.jsx';
+import { BUTTON_TEXT } from '../constants/buttonText.js';
 
 export default function Clans() {
   const { firstPet } = useMyPets();
@@ -69,7 +70,7 @@ export default function Clans() {
           </p>
         </div>
         <button onClick={() => setShowCreate(!showCreate)} className="btn-primary text-sm py-2">
-          <Plus size={16} /> Crear nuevo clan
+          <Plus size={16} /> + {BUTTON_TEXT.CREATE_CLAN}
         </button>
       </div>
 
@@ -92,9 +93,9 @@ export default function Clans() {
             />
             <div className="flex gap-3">
               <button className="btn-primary text-sm py-2 flex-1" onClick={handleCreate} disabled={creating}>
-                {creating ? 'Creando...' : 'Crear'}
+                {creating ? 'Creando...' : BUTTON_TEXT.CREATE}
               </button>
-              <button className="btn-secondary text-sm py-2" onClick={() => setShowCreate(false)}>Cancelar</button>
+              <button className="btn-secondary text-sm py-2" onClick={() => setShowCreate(false)}>{BUTTON_TEXT.CANCEL}</button>
             </div>
           </div>
         </div>
@@ -179,10 +180,10 @@ function ClanRow({ clan, joined, onJoin }) {
                 className="btn-primary text-xs py-1 px-3"
                 onClick={() => { setIsJoined(true); onJoin?.(); }}
               >
-                Unirse
+                {BUTTON_TEXT.JOIN_CLAN}
               </button>
             ) : (
-              <span className="text-xs text-wahu-500 font-semibold">✓ Miembro</span>
+              <span className="text-xs text-wahu-500 font-semibold">{BUTTON_TEXT.MEMBER}</span>
             )}
           </div>
         </div>
