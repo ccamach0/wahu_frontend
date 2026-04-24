@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Users, MessageSquare, Image, LogOut, Trash2, Shield, Clock, AlertCircle } from 'lucide-react';
+import { Users, MessageSquare, Image, LogOut, Trash2, Shield, Clock, AlertCircle, MessageCircle } from 'lucide-react';
 import api from '../services/api.js';
 import { useAuth } from '../hooks/useAuth.jsx';
 import { useMyPets } from '../hooks/useMyPets.jsx';
@@ -193,53 +193,53 @@ export default function ClanProfile() {
 
           {/* Tabs */}
           {isMember && (
-            <div className="flex gap-2 -mx-4 px-4 border-t pt-3 md:overflow-x-visible overflow-x-auto">
+            <div className="flex gap-2 border-t pt-3">
               <button
                 onClick={() => setActiveTab('posts')}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm whitespace-nowrap transition ${
+                className={`flex-1 flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg text-sm transition ${
                   activeTab === 'posts'
                     ? 'bg-wahu-500 text-white'
                     : 'text-gray-600 hover:bg-gray-100'
                 }`}
                 title="Publicaciones"
               >
-                <MessageSquare size={14} className="flex-shrink-0" />
+                <MessageSquare size={16} className="flex-shrink-0" />
                 <span className="hidden md:inline">Publicaciones</span>
               </button>
               <button
                 onClick={() => setActiveTab('gallery')}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm whitespace-nowrap transition ${
+                className={`flex-1 flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg text-sm transition ${
                   activeTab === 'gallery'
                     ? 'bg-wahu-500 text-white'
                     : 'text-gray-600 hover:bg-gray-100'
                 }`}
                 title="Galería"
               >
-                <Image size={14} className="flex-shrink-0" />
+                <Image size={16} className="flex-shrink-0" />
                 <span className="hidden md:inline">Galería</span>
               </button>
               <button
                 onClick={() => setActiveTab('members')}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm whitespace-nowrap transition ${
+                className={`flex-1 flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg text-sm transition ${
                   activeTab === 'members'
                     ? 'bg-wahu-500 text-white'
                     : 'text-gray-600 hover:bg-gray-100'
                 }`}
                 title="Miembros"
               >
-                <Users size={14} className="flex-shrink-0" />
+                <Users size={16} className="flex-shrink-0" />
                 <span className="hidden md:inline">Miembros</span>
               </button>
               <button
                 onClick={() => setActiveTab('chat')}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm whitespace-nowrap transition ${
+                className={`flex-1 flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg text-sm transition ${
                   activeTab === 'chat'
                     ? 'bg-wahu-500 text-white'
                     : 'text-gray-600 hover:bg-gray-100'
                 }`}
                 title="Chat"
               >
-                <MessageSquare size={14} className="flex-shrink-0" />
+                <MessageCircle size={16} className="flex-shrink-0" />
                 <span className="hidden md:inline">Chat</span>
               </button>
             </div>
