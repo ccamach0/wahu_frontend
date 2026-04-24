@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Users, PawPrint, ArrowLeft, UserCheck, Clock, Check, PawPrint as PawIcon } from 'lucide-react';
 import api from '../services/api.js';
 import PostsSection from '../components/PostsSection.jsx';
+import Gallery from '../components/Gallery.jsx';
 import { useAuth } from '../hooks/useAuth.jsx';
 import { useMyPets } from '../hooks/useMyPets.jsx';
 
@@ -56,10 +57,40 @@ export default function CompanionProfile() {
   const [actionLoading, setActionLoading] = useState({});
   const [posts, setPosts] = useState([]);
   const [postsLoading, setPostsLoading] = useState(false);
+  const [gallery, setGallery] = useState([]);
+  const [galleryLoading, setGalleryLoading] = useState(false);
+  const [galleryComments, setGalleryComments] = useState({});
+  const [loadingGalleryComments, setLoadingGalleryComments] = useState({});
 
   useEffect(() => {
     api.getCompanionProfile(username)
-      .then(setCompanion)
+      .then(data => {
+        setCompanion(data);
+        // Cargar galería del compañero
+        if (data?.id) {
+          setGalleryLoading(true);
+          api.getCompanionGallery(data.id, 100)
+            .then(res => {
+              setGallery(res.images || []);
+              // Cargar comentarios para cada imagen
+              res.images?.forEach(image => {
+                setLoadingGalleryComments(prev => ({ ...prev, [image.id]: true }));
+                api.getCompanionGalleryComments(data.id, image.id)
+                  .then(commentsRes => {
+                    setGalleryComments(prev => ({ ...prev, [image.id]: commentsRes.comments || [] }));
+                  })
+                  .catch(() => {
+                    setGalleryComments(prev => ({ ...prev, [image.id]: [] }));
+                  })
+                  .finally(() => {
+                    setLoadingGalleryComments(prev => ({ ...prev, [image.id]: false }));
+                  });
+              });
+            })
+            .catch(() => setGallery([]))
+            .finally(() => setGalleryLoading(false));
+        }
+      })
       .catch(() => setCompanion(null))
       .finally(() => setPageLoading(false));
   }, [username]);
@@ -68,7 +99,24 @@ export default function CompanionProfile() {
     if (!companion?.id) return;
     setPostsLoading(true);
     api.getCompanionPosts(companion.id, 50)
-      .then(res => setPosts(res.posts || []))
+      .then(res => {
+        const postsWithComments = res.posts || [];
+        setPosts(postsWithComments);
+        // Cargar comentarios para cada post
+        postsWithComments.forEach(post => {
+          api.getCompanionPostComments(companion.id, post.id)
+            .then(commentsRes => {
+              setPosts(prev => prev.map(p =>
+                p.id === post.id ? { ...p, comments: commentsRes.comments || [] } : p
+              ));
+            })
+            .catch(() => {
+              setPosts(prev => prev.map(p =>
+                p.id === post.id ? { ...p, comments: [] } : p
+              ));
+            });
+        });
+      })
       .catch(() => setPosts([]))
       .finally(() => setPostsLoading(false));
   }, [companion?.id]);
@@ -234,6 +282,46 @@ export default function CompanionProfile() {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* Galería del compañero */}
+      {gallery.length > 0 && (
+        <div className="card p-5 mb-6 mt-8">
+          <h2 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+            📸 Galería de {companion.name}
+          </h2>
+          <Gallery
+            images={gallery}
+            loading={galleryLoading}
+            isOwner={false}
+            imageComments={galleryComments}
+            onAddComment={async (imageId, content, sent_as_owner) => {
+              try {
+                const comment = await api.createCompanionGalleryComment(companion.id, imageId, content, sent_as_owner);
+                setGalleryComments(prev => ({
+                  ...prev,
+                  [imageId]: [...(prev[imageId] || []), comment]
+                }));
+              } catch (err) {
+                alert(err.message || 'Error al crear comentario');
+              }
+            }}
+            onDeleteComment={async (imageId, commentId) => {
+              try {
+                await api.deleteCompanionGalleryComment(companion.id, imageId, commentId);
+                setGalleryComments(prev => ({
+                  ...prev,
+                  [imageId]: prev[imageId].filter(c => c.id !== commentId)
+                }));
+              } catch {
+                alert('Error al eliminar comentario');
+              }
+            }}
+            firstPet={firstPet}
+            user={user}
+            loadingComments={loadingGalleryComments}
+          />
         </div>
       )}
 

@@ -74,7 +74,24 @@ export default function PetProfile() {
     if (!pet?.id) return;
     setPostsLoading(true);
     api.getPetPosts(pet.id, 50)
-      .then(res => setPosts(res.posts || []))
+      .then(res => {
+        const postsWithComments = res.posts || [];
+        setPosts(postsWithComments);
+        // Cargar comentarios para cada post
+        postsWithComments.forEach(post => {
+          api.getPetPostComments(pet.id, post.id)
+            .then(commentsRes => {
+              setPosts(prev => prev.map(p =>
+                p.id === post.id ? { ...p, comments: commentsRes.comments || [] } : p
+              ));
+            })
+            .catch(() => {
+              setPosts(prev => prev.map(p =>
+                p.id === post.id ? { ...p, comments: [] } : p
+              ));
+            });
+        });
+      })
       .catch(() => setPosts([]))
       .finally(() => setPostsLoading(false));
   }, [pet?.id]);

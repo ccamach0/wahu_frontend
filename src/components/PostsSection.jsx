@@ -153,7 +153,7 @@ export default function PostsSection({
             {/* Comments section */}
             {expandedPost === post.id && (
               <CommentsSection
-                comments={postComments[post.id] || []}
+                comments={post.comments || []}
                 onAddComment={(content, sent_as_owner) => onAddComment(post.id, content, sent_as_owner)}
                 onDeleteComment={(commentId) => onDeleteComment(post.id, commentId)}
                 firstPet={firstPet}

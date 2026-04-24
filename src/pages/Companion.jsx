@@ -94,7 +94,24 @@ export default function Companion() {
     if (!user?.id) return;
     setPostsLoading(true);
     api.getCompanionPosts(user.id, 50)
-      .then(res => setMyPosts(res.posts || []))
+      .then(res => {
+        const postsWithComments = res.posts || [];
+        setMyPosts(postsWithComments);
+        // Cargar comentarios para cada post
+        postsWithComments.forEach(post => {
+          api.getCompanionPostComments(user.id, post.id)
+            .then(commentsRes => {
+              setMyPosts(prev => prev.map(p =>
+                p.id === post.id ? { ...p, comments: commentsRes.comments || [] } : p
+              ));
+            })
+            .catch(() => {
+              setMyPosts(prev => prev.map(p =>
+                p.id === post.id ? { ...p, comments: [] } : p
+              ));
+            });
+        });
+      })
       .catch(() => setMyPosts([]))
       .finally(() => setPostsLoading(false));
   }, [user?.id]);
