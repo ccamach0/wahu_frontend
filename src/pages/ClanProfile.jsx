@@ -68,31 +68,45 @@ export default function ClanProfile() {
   };
 
   const handleLeaveClan = async () => {
-    if (!confirm('¿Estás seguro de que deseas salir del clan?')) return;
+    const confirmed = window.confirm(
+      '⚠️  Vas a salir del clan "' + clan.name + '"\n\nEsta acción es irreversible. ¿Estás seguro?'
+    );
+    if (!confirmed) return;
 
     try {
       await api.leaveClan(clanId);
-      setIsMember(false);
-      setUserRole(null);
-      loadClan();
+      navigate('/clans');
     } catch (err) {
       alert(err.message || 'Error al salir del clan');
     }
   };
 
+  const handleDeleteClan = async () => {
+    const confirmed = window.confirm(
+      '⚠️  ¡ADVERTENCIA! Vas a ELIMINAR el clan "' + clan.name + '" de forma permanente.\n\nTodos los posts, galería, mensajes y miembros serán eliminados.\n\n¿Estás completamente seguro?'
+    );
+    if (!confirmed) return;
+
+    try {
+      await api.deleteClan(clanId);
+      navigate('/clans');
+    } catch (err) {
+      alert(err.message || 'Error al eliminar el clan');
+    }
+  };
+
   const handleJoinClan = async () => {
     if (!firstPet) {
-      alert('Necesitas una mascota para unirte al clan');
+      alert('Necesitas una mascota para solicitar acceso al clan');
       return;
     }
 
     try {
       await api.joinClan(clanId, firstPet.id);
-      setIsMember(true);
-      setUserRole('member');
+      alert('Solicitud de acceso enviada. Espera la aceptación de un moderador.');
       loadClan();
     } catch (err) {
-      alert(err.message || 'Error al unirse al clan');
+      alert(err.message || 'Error al solicitar acceso');
     }
   };
 
@@ -134,13 +148,24 @@ export default function ClanProfile() {
                 {clan.member_count || 0} miembros
               </p>
             </div>
-            {isMember && (
+            {isAdmin && (
+              <button
+                onClick={handleDeleteClan}
+                className="px-3 py-1 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition flex items-center gap-2"
+                title="Eliminar clan"
+              >
+                <Trash2 size={16} />
+                Eliminar
+              </button>
+            )}
+            {isMember && !isAdmin && (
               <button
                 onClick={handleLeaveClan}
-                className="p-2 hover:bg-red-50 rounded-lg text-red-500 transition"
+                className="px-3 py-1 bg-red-100 text-red-600 rounded-lg text-sm font-medium hover:bg-red-200 transition flex items-center gap-2"
                 title="Salir del clan"
               >
-                <LogOut size={18} />
+                <LogOut size={16} />
+                Salir
               </button>
             )}
             {!isMember && (
@@ -148,7 +173,7 @@ export default function ClanProfile() {
                 onClick={handleJoinClan}
                 className="px-3 py-1 bg-wahu-500 text-white rounded-lg text-sm font-medium hover:bg-wahu-600 transition"
               >
-                Unirse
+                Solicitar acceso
               </button>
             )}
           </div>

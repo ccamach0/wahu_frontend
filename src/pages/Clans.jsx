@@ -196,8 +196,9 @@ function ClanRow({ clan, joined, onJoin, navigate }) {
               <button
                 className="btn-primary text-xs py-1 px-3"
                 onClick={handleJoinClick}
+                title="Enviar solicitud de acceso"
               >
-                {BUTTON_TEXT.JOIN_CLAN}
+                Solicitar
               </button>
             ) : (
               <span className="text-xs text-wahu-500 font-semibold">{BUTTON_TEXT.MEMBER}</span>
