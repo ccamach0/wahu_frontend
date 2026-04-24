@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider } from './hooks/useAuth.jsx';
 import { PetProvider } from './hooks/usePetContext.jsx';
+import { ToastProvider } from './components/ToastProvider.jsx';
 import Layout from './components/Layout.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
@@ -26,7 +27,8 @@ function AppRoutes() {
     <BrowserRouter>
       <AuthProvider>
         <PetProvider>
-        <Routes>
+          <ToastProvider>
+            <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/verify" element={<VerifyEmail />} />
@@ -45,7 +47,8 @@ function AppRoutes() {
             <Route path="/appointments" element={<Appointments />} />
           </Route>
           <Route path="*" element={<Navigate to="/login" replace />} />
-        </Routes>
+            </Routes>
+          </ToastProvider>
         </PetProvider>
       </AuthProvider>
     </BrowserRouter>

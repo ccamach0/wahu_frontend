@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, Plus, PawPrint, Trash2, Star, AlertTriangle, ExternalLink, X } from 'lucide-react';
+import { User, Plus, PawPrint, Trash2, Star, ExternalLink, X } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth.jsx';
 import { usePetContext } from '../hooks/usePetContext.jsx';
+import ConfirmModal from '../components/ConfirmModal.jsx';
 import ImageUpload from '../components/ImageUpload.jsx';
 import Gallery from '../components/Gallery.jsx';
 import PostsSection from '../components/PostsSection.jsx';
@@ -12,41 +13,6 @@ import { BUTTON_TEXT } from '../constants/buttonText.js';
 
 const SPECIES = ['Perro', 'Gato', 'Conejo', 'Pájaro', 'Hamster', 'Otro'];
 const GENDERS = ['Macho', 'Hembra', 'No especificado'];
-
-function ConfirmModal({ pet, onConfirm, onCancel }) {
-  return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center flex-shrink-0">
-            <AlertTriangle size={20} className="text-red-500" />
-          </div>
-          <h3 className="font-bold text-gray-800">Eliminar mascota</h3>
-        </div>
-        <p className="text-gray-600 text-sm mb-2">
-          ¿Estás seguro que deseas eliminar a <strong>{pet.name}</strong>?
-        </p>
-        <p className="text-gray-400 text-xs mb-6">
-          Se perderá toda la información de esta mascota: perfil, tarjetas, clanes y amigos. Esta acción no se puede deshacer.
-        </p>
-        <div className="flex gap-3">
-          <button
-            onClick={onConfirm}
-            className="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold text-sm py-2.5 rounded-xl transition-colors"
-          >
-            {BUTTON_TEXT.DELETE}
-          </button>
-          <button
-            onClick={onCancel}
-            className="flex-1 btn-secondary text-sm py-2.5"
-          >
-            {BUTTON_TEXT.CANCEL}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export default function Companion() {
   const navigate = useNavigate();
@@ -235,7 +201,11 @@ export default function Companion() {
     <div className="max-w-2xl mx-auto px-6 py-8">
       {petToDelete && (
         <ConfirmModal
-          pet={petToDelete}
+          isOpen={true}
+          title="Eliminar mascota"
+          message={`¿Estás seguro que deseas eliminar a ${petToDelete.name}? Se perderá toda la información de esta mascota: perfil, tarjetas, clanes y amigos. Esta acción no se puede deshacer.`}
+          confirmText={BUTTON_TEXT.DELETE}
+          severity="danger"
           onConfirm={handleDeleteConfirm}
           onCancel={() => setPetToDelete(null)}
         />
