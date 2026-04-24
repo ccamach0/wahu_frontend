@@ -118,50 +118,83 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Ilustración moderna del lado derecho */}
+            {/* Ilustración de red social moderna */}
             <div className="flex-1 hidden md:block">
-              <div className="relative h-96 flex items-center justify-center">
-                {/* Círculos decorativos de fondo */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="absolute w-64 h-64 bg-wahu-500/5 rounded-full"></div>
-                  <div className="absolute w-48 h-48 bg-wahu-500/10 rounded-full"></div>
+              <div className="relative h-96 flex items-center justify-center overflow-hidden">
+                {/* Fondo decorativo */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-5">
+                  <div className="absolute w-96 h-96 bg-wahu-500 rounded-full blur-3xl"></div>
                 </div>
 
-                {/* Elementos principales */}
-                <div className="relative z-10 w-full h-full flex items-center justify-center">
-                  <div className="relative w-80 h-80">
-                    {/* Círculo central grande */}
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-wahu-500 rounded-full flex items-center justify-center text-white text-2xl shadow-lg">
-                      🐾
-                    </div>
+                {/* Red de conexión */}
+                <svg className="absolute inset-0 w-full h-full" style={{ zIndex: 1 }}>
+                  {/* Líneas de conexión entre nodos */}
+                  {/* Centro a todos */}
+                  <line x1="50%" y1="50%" x2="25%" y2="20%" stroke="#f97316" strokeWidth="2" strokeOpacity="0.25" />
+                  <line x1="50%" y1="50%" x2="75%" y2="18%" stroke="#f97316" strokeWidth="2" strokeOpacity="0.25" />
+                  <line x1="50%" y1="50%" x2="80%" y2="50%" stroke="#f97316" strokeWidth="2" strokeOpacity="0.25" />
+                  <line x1="50%" y1="50%" x2="70%" y2="80%" stroke="#f97316" strokeWidth="2" strokeOpacity="0.25" />
+                  <line x1="50%" y1="50%" x2="30%" y2="82%" stroke="#f97316" strokeWidth="2" strokeOpacity="0.25" />
+                  <line x1="50%" y1="50%" x2="15%" y2="75%" stroke="#f97316" strokeWidth="2" strokeOpacity="0.25" />
+                  <line x1="50%" y1="50%" x2="18%" y2="45%" stroke="#f97316" strokeWidth="2" strokeOpacity="0.25" />
 
-                    {/* Círculos alrededor (mascotas) */}
-                    <div className="absolute top-8 left-10 w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center text-3xl shadow-md hover:shadow-lg transition transform hover:scale-110">
-                      🐕
-                    </div>
-                    <div className="absolute top-12 right-8 w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl shadow-md hover:shadow-lg transition transform hover:scale-110">
-                      🐈
-                    </div>
-                    <div className="absolute bottom-12 left-12 w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center text-3xl shadow-md hover:shadow-lg transition transform hover:scale-110">
-                      🐕‍🦺
-                    </div>
-                    <div className="absolute bottom-8 right-10 w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center text-3xl shadow-md hover:shadow-lg transition transform hover:scale-110">
-                      🐇
-                    </div>
+                  {/* Conexiones entre nodos */}
+                  <line x1="25%" y1="20%" x2="75%" y2="18%" stroke="#f97316" strokeWidth="1.5" strokeOpacity="0.15" />
+                  <line x1="75%" y1="18%" x2="80%" y2="50%" stroke="#f97316" strokeWidth="1.5" strokeOpacity="0.15" />
+                  <line x1="80%" y1="50%" x2="70%" y2="80%" stroke="#f97316" strokeWidth="1.5" strokeOpacity="0.15" />
+                  <line x1="70%" y1="80%" x2="30%" y2="82%" stroke="#f97316" strokeWidth="1.5" strokeOpacity="0.15" />
+                  <line x1="30%" y1="82%" x2="15%" y2="75%" stroke="#f97316" strokeWidth="1.5" strokeOpacity="0.15" />
+                  <line x1="15%" y1="75%" x2="18%" y2="45%" stroke="#f97316" strokeWidth="1.5" strokeOpacity="0.15" />
+                  <line x1="18%" y1="45%" x2="25%" y2="20%" stroke="#f97316" strokeWidth="1.5" strokeOpacity="0.15" />
+                </svg>
 
-                    {/* Líneas conectoras */}
-                    <svg className="absolute inset-0 w-full h-full" style={{ zIndex: 0 }}>
-                      <line x1="40%" y1="15%" x2="50%" y2="50%" stroke="#f97316" strokeWidth="2" strokeOpacity="0.3" />
-                      <line x1="70%" y1="20%" x2="50%" y2="50%" stroke="#f97316" strokeWidth="2" strokeOpacity="0.3" />
-                      <line x1="30%" y1="70%" x2="50%" y2="50%" stroke="#f97316" strokeWidth="2" strokeOpacity="0.3" />
-                      <line x1="65%" y1="75%" x2="50%" y2="50%" stroke="#f97316" strokeWidth="2" strokeOpacity="0.3" />
-                    </svg>
+                {/* Nodos de red (mascotas) */}
+                <div className="absolute inset-0 w-full h-full" style={{ zIndex: 2 }}>
+                  {/* Centro */}
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-wahu-500 rounded-full flex items-center justify-center text-white text-xl shadow-lg">
+                    🐾
+                  </div>
+
+                  {/* Nodos periféricos */}
+                  {/* Arriba izquierda */}
+                  <div className="absolute top-[15%] left-[25%] w-14 h-14 bg-gradient-to-br from-orange-100 to-orange-50 rounded-full flex items-center justify-center text-2xl shadow-md hover:shadow-lg transition transform hover:scale-110 cursor-pointer border-2 border-orange-200">
+                    🐕
+                  </div>
+
+                  {/* Arriba derecha */}
+                  <div className="absolute top-[12%] right-[22%] w-14 h-14 bg-gradient-to-br from-blue-100 to-blue-50 rounded-full flex items-center justify-center text-2xl shadow-md hover:shadow-lg transition transform hover:scale-110 cursor-pointer border-2 border-blue-200">
+                    🐈
+                  </div>
+
+                  {/* Derecha */}
+                  <div className="absolute top-1/2 right-[8%] transform -translate-y-1/2 w-14 h-14 bg-gradient-to-br from-yellow-100 to-yellow-50 rounded-full flex items-center justify-center text-2xl shadow-md hover:shadow-lg transition transform hover:scale-110 cursor-pointer border-2 border-yellow-200">
+                    🐕‍🦺
+                  </div>
+
+                  {/* Abajo derecha */}
+                  <div className="absolute bottom-[15%] right-[20%] w-14 h-14 bg-gradient-to-br from-pink-100 to-pink-50 rounded-full flex items-center justify-center text-2xl shadow-md hover:shadow-lg transition transform hover:scale-110 cursor-pointer border-2 border-pink-200">
+                    🐇
+                  </div>
+
+                  {/* Abajo izquierda */}
+                  <div className="absolute bottom-[12%] left-[25%] w-14 h-14 bg-gradient-to-br from-purple-100 to-purple-50 rounded-full flex items-center justify-center text-2xl shadow-md hover:shadow-lg transition transform hover:scale-110 cursor-pointer border-2 border-purple-200">
+                    🦎
+                  </div>
+
+                  {/* Izquierda */}
+                  <div className="absolute top-1/2 left-[8%] transform -translate-y-1/2 w-14 h-14 bg-gradient-to-br from-green-100 to-green-50 rounded-full flex items-center justify-center text-2xl shadow-md hover:shadow-lg transition transform hover:scale-110 cursor-pointer border-2 border-green-200">
+                    🦜
+                  </div>
+
+                  {/* Nodo secundario superior */}
+                  <div className="absolute top-[25%] left-[38%] w-12 h-12 bg-gradient-to-br from-red-100 to-red-50 rounded-full flex items-center justify-center text-xl shadow-md hover:shadow-lg transition transform hover:scale-110 cursor-pointer border-2 border-red-200">
+                    🐶
                   </div>
                 </div>
 
                 {/* Texto de conexión */}
-                <div className="absolute bottom-6 left-0 right-0 text-center z-20">
-                  <p className="text-gray-600 text-base font-medium">Conecta con miles de mascotas</p>
+                <div className="absolute bottom-4 left-0 right-0 text-center z-20">
+                  <p className="text-gray-600 text-sm font-medium">Una red social de mascotas conectadas</p>
                 </div>
               </div>
             </div>
