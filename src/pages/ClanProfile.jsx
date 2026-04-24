@@ -246,13 +246,24 @@ export default function ClanProfile() {
         {!isMember ? (
           <div className="text-center py-8">
             <Users className="mx-auto mb-3 text-gray-400" size={32} />
-            <p className="text-gray-600 mb-4">Necesitas ser miembro para ver el contenido del clan</p>
-            <button
-              onClick={handleJoinClan}
-              className="px-4 py-2 bg-wahu-500 text-white rounded-lg font-medium hover:bg-wahu-600 transition"
-            >
-              Unirse al clan
-            </button>
+            <p className="text-gray-600 mb-4">
+              {hasPendingRequest
+                ? 'Tu solicitud de acceso está pendiente de aprobación'
+                : 'Necesitas ser miembro para ver el contenido del clan'}
+            </p>
+            {!hasPendingRequest && (
+              <button
+                onClick={handleJoinClan}
+                className="px-4 py-2 bg-wahu-500 text-white rounded-lg font-medium hover:bg-wahu-600 transition"
+              >
+                Solicitar acceso
+              </button>
+            )}
+            {hasPendingRequest && (
+              <div className="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg font-medium inline-block">
+                ⏳ Solicitud pendiente
+              </div>
+            )}
           </div>
         ) : (
           <>
