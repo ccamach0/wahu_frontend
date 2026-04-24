@@ -99,6 +99,16 @@ export const api = {
     request(`/clans/${clanId}/members/${petId}`, { method: 'DELETE' }),
   leaveClan: (clanId) =>
     request(`/clans/${clanId}/leave`, { method: 'POST' }),
+  deleteClan: (clanId) =>
+    request(`/clans/${clanId}`, { method: 'DELETE' }),
+
+  // Clan Join Requests
+  getClanJoinRequests: (clanId) =>
+    request(`/clans/${clanId}/requests`),
+  approveClanRequest: (clanId, requestId) =>
+    request(`/clans/${clanId}/requests/${requestId}/approve`, { method: 'POST' }),
+  rejectClanRequest: (clanId, requestId) =>
+    request(`/clans/${clanId}/requests/${requestId}/reject`, { method: 'POST' }),
 
   // Clan Posts
   getClanPosts: (clanId, limit = 20, offset = 0) =>
