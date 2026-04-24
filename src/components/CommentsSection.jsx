@@ -70,13 +70,13 @@ export default function CommentsSection({
             <button
               type="button"
               onClick={() => setSendAsOwner(true)}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition max-w-xs md:max-w-none ${
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition ${
                 sendAsOwner ? 'bg-gray-700 text-white shadow-sm' : 'bg-gray-100 text-gray-500'
               }`}
               title={user?.name}
             >
               <User size={14} className="flex-shrink-0" />
-              <span className="truncate">{user?.name}</span>
+              <span className="hidden md:inline">{user?.name}</span>
             </button>
           </div>
 
