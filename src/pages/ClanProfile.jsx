@@ -52,7 +52,13 @@ export default function ClanProfile() {
         if (userMember) {
           setIsMember(true);
           setUserRole(userMember.role);
+        } else {
+          setIsMember(false);
+          setUserRole(null);
         }
+      } else {
+        setIsMember(false);
+        setUserRole(null);
       }
     } catch (err) {
       console.error('Error loading clan:', err);
