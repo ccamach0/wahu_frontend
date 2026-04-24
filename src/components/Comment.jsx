@@ -28,11 +28,11 @@ export default function Comment({ comment, isAuthor, isProfileOwner, onDelete })
           {new Date(comment.created_at).toLocaleDateString()} {new Date(comment.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </p>
       </div>
-      {(isAuthor || isProfileOwner) && (
+      {isAuthor && (
         <button
           onClick={onDelete}
           className="flex-shrink-0 p-1 hover:bg-red-50 rounded-lg transition text-red-500 hover:text-red-600"
-          title={isAuthor ? "Eliminar tu comentario" : "Eliminar comentario del perfil"}
+          title="Eliminar tu comentario"
         >
           <Trash2 size={16} />
         </button>
