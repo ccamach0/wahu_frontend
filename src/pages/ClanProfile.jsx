@@ -20,6 +20,7 @@ export default function ClanProfile() {
   const [activeTab, setActiveTab] = useState('posts');
   const [userRole, setUserRole] = useState(null);
   const [isMember, setIsMember] = useState(false);
+  const [hasPendingRequest, setHasPendingRequest] = useState(false);
   const previousPetIdRef = useRef(null);
 
   useEffect(() => {
@@ -45,6 +46,7 @@ export default function ClanProfile() {
       const data = await api.getClan(clanId);
       setClan(data);
       setMembers(data.members || []);
+      setHasPendingRequest(!!data.userPendingRequest);
 
       // Determine user's role in clan
       if (firstPet && data.members) {
@@ -168,7 +170,12 @@ export default function ClanProfile() {
                 Salir
               </button>
             )}
-            {!isMember && (
+            {!isMember && hasPendingRequest && (
+              <span className="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-lg text-sm font-medium">
+                ⏳ Solicitud pendiente
+              </span>
+            )}
+            {!isMember && !hasPendingRequest && (
               <button
                 onClick={handleJoinClan}
                 className="px-3 py-1 bg-wahu-500 text-white rounded-lg text-sm font-medium hover:bg-wahu-600 transition"
