@@ -4,6 +4,7 @@ import { Users, MessageSquare, Image, LogOut, Trash2, Shield, Clock, AlertCircle
 import api from '../services/api.js';
 import { useAuth } from '../hooks/useAuth.jsx';
 import { useMyPets } from '../hooks/useMyPets.jsx';
+import ConfirmModal from '../components/ConfirmModal.jsx';
 import ClanPostsSection from '../components/ClanPostsSection.jsx';
 import ClanGallerySection from '../components/ClanGallerySection.jsx';
 import ClanMembersPanel from '../components/ClanMembersPanel.jsx';
@@ -21,6 +22,8 @@ export default function ClanProfile() {
   const [userRole, setUserRole] = useState(null);
   const [isMember, setIsMember] = useState(false);
   const [hasPendingRequest, setHasPendingRequest] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   const previousPetIdRef = useRef(null);
 
   useEffect(() => {
@@ -69,31 +72,29 @@ export default function ClanProfile() {
     }
   };
 
-  const handleLeaveClan = async () => {
-    const confirmed = window.confirm(
-      'Vas a salir del clan "' + clan.name + '"\n\nEsta acción es irreversible. ¿Estás seguro?'
-    );
-    if (!confirmed) return;
-
-    try {
-      await api.leaveClan(clanId);
-      navigate('/clans');
-    } catch (err) {
-      alert(err.message || 'Error al salir del clan');
-    }
+  const handleLeaveClan = () => {
+    setConfirmAction('leave');
   };
 
-  const handleDeleteClan = async () => {
-    const confirmed = window.confirm(
-      '¡ADVERTENCIA! Vas a ELIMINAR el clan "' + clan.name + '" de forma permanente.\n\nTodos los posts, galería, mensajes y miembros serán eliminados.\n\n¿Estás completamente seguro?'
-    );
-    if (!confirmed) return;
+  const handleDeleteClan = () => {
+    setConfirmAction('delete');
+  };
 
+  const executeConfirmedAction = async () => {
+    setIsProcessing(true);
     try {
-      await api.deleteClan(clanId);
-      navigate('/clans');
+      if (confirmAction === 'leave') {
+        await api.leaveClan(clanId);
+        navigate('/clans');
+      } else if (confirmAction === 'delete') {
+        await api.deleteClan(clanId);
+        navigate('/clans');
+      }
     } catch (err) {
-      alert(err.message || 'Error al eliminar el clan');
+      alert(err.message || 'Error al procesar la acción');
+      setConfirmAction(null);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -192,7 +193,7 @@ export default function ClanProfile() {
 
           {/* Tabs */}
           {isMember && (
-            <div className="flex gap-2 overflow-x-auto -mx-4 px-4 border-t pt-3">
+            <div className="flex gap-2 -mx-4 px-4 border-t pt-3 md:overflow-x-visible overflow-x-auto">
               <button
                 onClick={() => setActiveTab('posts')}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm whitespace-nowrap transition ${
@@ -200,9 +201,10 @@ export default function ClanProfile() {
                     ? 'bg-wahu-500 text-white'
                     : 'text-gray-600 hover:bg-gray-100'
                 }`}
+                title="Publicaciones"
               >
-                <MessageSquare size={14} />
-                Publicaciones
+                <MessageSquare size={14} className="flex-shrink-0" />
+                <span className="hidden md:inline">Publicaciones</span>
               </button>
               <button
                 onClick={() => setActiveTab('gallery')}
@@ -211,9 +213,10 @@ export default function ClanProfile() {
                     ? 'bg-wahu-500 text-white'
                     : 'text-gray-600 hover:bg-gray-100'
                 }`}
+                title="Galería"
               >
-                <Image size={14} />
-                Galería
+                <Image size={14} className="flex-shrink-0" />
+                <span className="hidden md:inline">Galería</span>
               </button>
               <button
                 onClick={() => setActiveTab('members')}
@@ -222,9 +225,10 @@ export default function ClanProfile() {
                     ? 'bg-wahu-500 text-white'
                     : 'text-gray-600 hover:bg-gray-100'
                 }`}
+                title="Miembros"
               >
-                <Users size={14} />
-                Miembros
+                <Users size={14} className="flex-shrink-0" />
+                <span className="hidden md:inline">Miembros</span>
               </button>
               <button
                 onClick={() => setActiveTab('chat')}
@@ -233,9 +237,10 @@ export default function ClanProfile() {
                     ? 'bg-wahu-500 text-white'
                     : 'text-gray-600 hover:bg-gray-100'
                 }`}
+                title="Chat"
               >
-                <MessageSquare size={14} />
-                Chat
+                <MessageSquare size={14} className="flex-shrink-0" />
+                <span className="hidden md:inline">Chat</span>
               </button>
             </div>
           )}
@@ -309,6 +314,35 @@ export default function ClanProfile() {
           </>
         )}
       </div>
+
+      {/* Confirm Modals */}
+      {confirmAction === 'leave' && (
+        <ConfirmModal
+          isOpen={true}
+          title="Salir del clan"
+          message={`Vas a salir del clan "${clan?.name}". Esta acción es irreversible. ¿Estás seguro?`}
+          confirmText="Sí, salir"
+          cancelText="Cancelar"
+          severity="warning"
+          loading={isProcessing}
+          onConfirm={executeConfirmedAction}
+          onCancel={() => setConfirmAction(null)}
+        />
+      )}
+
+      {confirmAction === 'delete' && (
+        <ConfirmModal
+          isOpen={true}
+          title="Eliminar clan permanentemente"
+          message={`¡ADVERTENCIA! Vas a ELIMINAR el clan "${clan?.name}" de forma permanente. Todos los posts, galería, mensajes y miembros serán eliminados. ¿Estás completamente seguro?`}
+          confirmText="Sí, eliminar"
+          cancelText="Cancelar"
+          severity="danger"
+          loading={isProcessing}
+          onConfirm={executeConfirmedAction}
+          onCancel={() => setConfirmAction(null)}
+        />
+      )}
     </div>
   );
 }
