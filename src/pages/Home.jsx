@@ -118,107 +118,14 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Ilustración de red social moderna */}
+            {/* Red de mascotas - Imagen profesional */}
             <div className="flex-1 hidden md:block">
-              <div className="relative h-96 flex items-center justify-center">
-                {/* SVG Background con gradientes */}
-                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 500 400" preserveAspectRatio="xMidYMid slice">
-                  <defs>
-                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" style={{ stopColor: '#f97316', stopOpacity: 0.1 }} />
-                      <stop offset="100%" style={{ stopColor: '#fb923c', stopOpacity: 0.05 }} />
-                    </linearGradient>
-                    <filter id="glow">
-                      <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-                      <feMerge>
-                        <feMergeNode in="coloredBlur" />
-                        <feMergeNode in="SourceGraphic" />
-                      </feMerge>
-                    </filter>
-                  </defs>
-
-                  {/* Fondo decorativo */}
-                  <circle cx="250" cy="200" r="180" fill="url(#grad1)" />
-
-                  {/* Líneas de conexión - más refinadas */}
-                  {/* Hub central a nodos */}
-                  <line x1="250" y1="200" x2="150" y2="80" stroke="#f97316" strokeWidth="2" strokeOpacity="0.3" />
-                  <line x1="250" y1="200" x2="350" y2="70" stroke="#f97316" strokeWidth="2" strokeOpacity="0.3" />
-                  <line x1="250" y1="200" x2="420" y2="150" stroke="#f97316" strokeWidth="2" strokeOpacity="0.3" />
-                  <line x1="250" y1="200" x2="400" y2="320" stroke="#f97316" strokeWidth="2" strokeOpacity="0.3" />
-                  <line x1="250" y1="200" x2="200" y2="350" stroke="#f97316" strokeWidth="2" strokeOpacity="0.3" />
-                  <line x1="250" y1="200" x2="80" y2="280" stroke="#f97316" strokeWidth="2" strokeOpacity="0.3" />
-                  <line x1="250" y1="200" x2="100" y2="120" stroke="#f97316" strokeWidth="2" strokeOpacity="0.3" />
-
-                  {/* Conexiones entre nodos - red completa */}
-                  <line x1="150" y1="80" x2="350" y2="70" stroke="#f97316" strokeWidth="1" strokeOpacity="0.15" strokeDasharray="5,5" />
-                  <line x1="350" y1="70" x2="420" y2="150" stroke="#f97316" strokeWidth="1" strokeOpacity="0.15" strokeDasharray="5,5" />
-                  <line x1="420" y1="150" x2="400" y2="320" stroke="#f97316" strokeWidth="1" strokeOpacity="0.15" strokeDasharray="5,5" />
-                  <line x1="400" y1="320" x2="200" y2="350" stroke="#f97316" strokeWidth="1" strokeOpacity="0.15" strokeDasharray="5,5" />
-                  <line x1="200" y1="350" x2="80" y2="280" stroke="#f97316" strokeWidth="1" strokeOpacity="0.15" strokeDasharray="5,5" />
-                  <line x1="80" y1="280" x2="100" y2="120" stroke="#f97316" strokeWidth="1" strokeOpacity="0.15" strokeDasharray="5,5" />
-                  <line x1="100" y1="120" x2="150" y2="80" stroke="#f97316" strokeWidth="1" strokeOpacity="0.15" strokeDasharray="5,5" />
-
-                  {/* Nodos con sombra */}
-                  {/* Centro */}
-                  <g filter="url(#glow)">
-                    <circle cx="250" cy="200" r="28" fill="#f97316" opacity="0.95" />
-                    <circle cx="250" cy="200" r="28" fill="none" stroke="#f97316" strokeWidth="2" opacity="0.3" />
-                    <text x="250" y="208" fontSize="24" fill="white" textAnchor="middle" fontWeight="bold">🐾</text>
-                  </g>
-
-                  {/* Nodo 1 - Arriba izquierda */}
-                  <g className="pet-node">
-                    <circle cx="150" cy="80" r="22" fill="#fecaca" opacity="0.9" />
-                    <circle cx="150" cy="80" r="22" fill="none" stroke="#f87171" strokeWidth="2" />
-                    <text x="150" y="88" fontSize="20" textAnchor="middle">🐕</text>
-                  </g>
-
-                  {/* Nodo 2 - Arriba derecha */}
-                  <g className="pet-node">
-                    <circle cx="350" cy="70" r="22" fill="#bfdbfe" opacity="0.9" />
-                    <circle cx="350" cy="70" r="22" fill="none" stroke="#60a5fa" strokeWidth="2" />
-                    <text x="350" y="78" fontSize="20" textAnchor="middle">🐈</text>
-                  </g>
-
-                  {/* Nodo 3 - Derecha */}
-                  <g className="pet-node">
-                    <circle cx="420" cy="150" r="22" fill="#fef08a" opacity="0.9" />
-                    <circle cx="420" cy="150" r="22" fill="none" stroke="#fbbf24" strokeWidth="2" />
-                    <text x="420" y="158" fontSize="20" textAnchor="middle">🦁</text>
-                  </g>
-
-                  {/* Nodo 4 - Abajo derecha */}
-                  <g className="pet-node">
-                    <circle cx="400" cy="320" r="22" fill="#fbcfe8" opacity="0.9" />
-                    <circle cx="400" cy="320" r="22" fill="none" stroke="#f472b6" strokeWidth="2" />
-                    <text x="400" y="328" fontSize="20" textAnchor="middle">🐇</text>
-                  </g>
-
-                  {/* Nodo 5 - Abajo izquierda */}
-                  <g className="pet-node">
-                    <circle cx="200" cy="350" r="22" fill="#d8b4fe" opacity="0.9" />
-                    <circle cx="200" cy="350" r="22" fill="none" stroke="#c084fc" strokeWidth="2" />
-                    <text x="200" y="358" fontSize="20" textAnchor="middle">🦎</text>
-                  </g>
-
-                  {/* Nodo 6 - Izquierda */}
-                  <g className="pet-node">
-                    <circle cx="80" cy="280" r="22" fill="#bbf7d0" opacity="0.9" />
-                    <circle cx="80" cy="280" r="22" fill="none" stroke="#34d399" strokeWidth="2" />
-                    <text x="80" y="288" fontSize="20" textAnchor="middle">🦜</text>
-                  </g>
-
-                  {/* Nodo 7 - Arriba izquierda secundario */}
-                  <g className="pet-node">
-                    <circle cx="100" cy="120" r="22" fill="#fed7aa" opacity="0.9" />
-                    <circle cx="100" cy="120" r="22" fill="none" stroke="#fb923c" strokeWidth="2" />
-                    <text x="100" y="128" fontSize="20" textAnchor="middle">🐕</text>
-                  </g>
-
-                  {/* Etiqueta */}
-                  <text x="250" y="385" fontSize="13" fill="#666" textAnchor="middle" fontWeight="500">Una red social de mascotas conectadas</text>
-                </svg>
+              <div className="relative h-96 flex items-center justify-center rounded-2xl overflow-hidden">
+                <img
+                  src="/red.png"
+                  alt="Red de mascotas conectadas"
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                />
               </div>
             </div>
           </div>
@@ -286,53 +193,13 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            {/* Sección izquierda - Videollamada */}
-            <div className="relative h-96 flex items-center justify-center">
-              <svg className="w-full h-full" viewBox="0 0 400 350" preserveAspectRatio="xMidYMid meet">
-                <defs>
-                  <linearGradient id="phoneGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style={{ stopColor: '#1f2937', stopOpacity: 1 }} />
-                    <stop offset="100%" style={{ stopColor: '#111827', stopOpacity: 1 }} />
-                  </linearGradient>
-                  <filter id="shadow">
-                    <feDropShadow dx="0" dy="10" stdDeviation="15" floodOpacity="0.3" />
-                  </filter>
-                </defs>
-
-                {/* Smartphone frame */}
-                <g filter="url(#shadow)">
-                  {/* Cuerpo del teléfono */}
-                  <rect x="80" y="20" width="240" height="310" rx="20" fill="url(#phoneGrad)" stroke="#000" strokeWidth="1" />
-
-                  {/* Pantalla */}
-                  <rect x="90" y="35" width="220" height="280" rx="16" fill="#0f172a" />
-
-                  {/* Notch */}
-                  <rect x="160" y="35" width="80" height="25" rx="12" fill="#1f2937" />
-
-                  {/* Pantalla de videollamada - Perro hablando */}
-                  <circle cx="200" cy="130" r="50" fill="#f97316" opacity="0.2" />
-                  <text x="200" y="145" fontSize="52" textAnchor="middle">🐕</text>
-
-                  {/* Controles de videollamada */}
-                  <g opacity="0.7">
-                    <circle cx="140" cy="250" r="16" fill="#ef4444" />
-                    <text x="140" y="257" fontSize="18" textAnchor="middle" fill="white">☎</text>
-
-                    <circle cx="200" cy="250" r="16" fill="#10b981" />
-                    <text x="200" y="257" fontSize="18" textAnchor="middle" fill="white">🎥</text>
-
-                    <circle cx="260" cy="250" r="16" fill="#3b82f6" />
-                    <text x="260" y="257" fontSize="18" textAnchor="middle" fill="white">🔊</text>
-                  </g>
-
-                  {/* Home indicator */}
-                  <rect x="170" y="305" width="60" height="4" rx="2" fill="#374151" />
-                </g>
-
-                {/* Etiqueta */}
-                <text x="200" y="335" fontSize="14" fill="#666" textAnchor="middle" fontWeight="600">Videollamadas en vivo</text>
-              </svg>
+            {/* Sección izquierda - Chat image */}
+            <div className="relative h-96 rounded-2xl overflow-hidden shadow-2xl">
+              <img
+                src="/chat.png"
+                alt="Videollamada en vivo"
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+              />
             </div>
 
             {/* Sección derecha - Texto y beneficios */}
@@ -432,6 +299,75 @@ export default function Home() {
               Ver todas las mascotas
               <ArrowRight size={20} />
             </button>
+          </div>
+        </div>
+      </div>
+
+      {/* ===== HIDRANTE: ENCUENTRA MASCOTAS CERCANAS ===== */}
+      <div className="bg-white py-20 border-t border-gray-200">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            {/* Sección izquierda - Texto */}
+            <div>
+              <div className="inline-block px-4 py-2 bg-orange-100 text-wahu-500 rounded-full text-sm font-bold mb-4">
+                🚀 Característica Especial
+              </div>
+              <h2 className="text-4xl font-black text-gray-900 mb-6">
+                Encuentra mascotas cerca de ti
+              </h2>
+              <p className="text-xl text-gray-600 mb-8">
+                Con el Hidrante, tu mascota aparece en el mapa para que otros compañeros puedan descubrirla y conectar. ¡Es como un encuentro virtual al aire libre!
+              </p>
+
+              <div className="space-y-4">
+                <div className="flex gap-3 items-start">
+                  <div className="w-6 h-6 rounded-full bg-wahu-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-white text-sm font-bold">✓</span>
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-900">Ubicación en vivo</p>
+                    <p className="text-sm text-gray-600">Comparte dónde estás para que te encuentren</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 items-start">
+                  <div className="w-6 h-6 rounded-full bg-wahu-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-white text-sm font-bold">✓</span>
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-900">Citas instantáneas</p>
+                    <p className="text-sm text-gray-600">Propón encuentros con mascotas cercanas</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 items-start">
+                  <div className="w-6 h-6 rounded-full bg-wahu-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-white text-sm font-bold">✓</span>
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-900">Socialización real</p>
+                    <p className="text-sm text-gray-600">Crea amistades en tu zona</p>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => navigate('/hydrant')}
+                className="mt-8 inline-flex items-center gap-2 px-6 py-3 bg-wahu-500 text-white font-bold rounded-lg hover:bg-wahu-600 transition-all hover:shadow-2xl"
+              >
+                Explorar Hidrante
+                <ArrowRight size={20} />
+              </button>
+            </div>
+
+            {/* Sección derecha - Imagen */}
+            <div className="relative h-96 rounded-2xl overflow-hidden shadow-2xl">
+              <img
+                src="/hidrante.png"
+                alt="Hidrante - Encuentra mascotas cerca de ti"
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+              />
+            </div>
           </div>
         </div>
       </div>
