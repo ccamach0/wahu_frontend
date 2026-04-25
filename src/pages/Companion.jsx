@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, Plus, PawPrint, Trash2, Star, ExternalLink, X, MessageSquare } from 'lucide-react';
+import { User, Plus, PawPrint, Trash2, Star, ExternalLink, X, MessageSquare, Lock } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth.jsx';
 import { usePetContext } from '../hooks/usePetContext.jsx';
 import ConfirmModal from '../components/ConfirmModal.jsx';
@@ -41,6 +41,7 @@ export default function Companion() {
   const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [passwordError, setPasswordError] = useState('');
   const [passwordSaving, setPasswordSaving] = useState(false);
+  const [hasPassword, setHasPassword] = useState(true); // Asumir que tiene contraseña por defecto
 
   useEffect(() => {
     if (!user?.id) return;
@@ -158,7 +159,12 @@ export default function Companion() {
     e.preventDefault();
     setPasswordError('');
 
-    if (!passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword) {
+    if (hasPassword && !passwordForm.currentPassword) {
+      setPasswordError('La contraseña actual es requerida');
+      return;
+    }
+
+    if (!passwordForm.newPassword || !passwordForm.confirmPassword) {
       setPasswordError('Todos los campos son requeridos');
       return;
     }
@@ -255,15 +261,16 @@ export default function Companion() {
 
       {/* Perfil */}
       <div className="card p-6 mb-6">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 md:gap-0 mb-4">
           <h2 className="font-bold text-gray-800">Mi perfil</h2>
-          <div className="flex gap-2">
+          <div className="flex gap-2 w-full md:w-auto">
             <button
               onClick={() => setShowChangePassword(true)}
-              className="text-sm btn-secondary py-1.5"
+              className="flex items-center gap-2 flex-1 md:flex-none text-sm btn-secondary py-1.5 justify-center md:justify-start px-3"
               title="Cambiar contraseña"
             >
-              🔒 Contraseña
+              <Lock size={14} />
+              <span className="hidden md:inline">Contraseña</span>
             </button>
             <button
               onClick={() => {
@@ -642,17 +649,25 @@ export default function Companion() {
                 </div>
               )}
 
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-2">Contraseña actual</label>
-                <input
-                  type="password"
-                  value={passwordForm.currentPassword}
-                  onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
-                  className="input w-full"
-                  placeholder="Ingresa tu contraseña actual"
-                  disabled={passwordSaving}
-                />
-              </div>
+              {!hasPassword && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg px-3 py-2.5 text-xs text-blue-700">
+                  Nota: Te registraste con Google Auth. Solo necesitas establecer una contraseña nueva.
+                </div>
+              )}
+
+              {hasPassword && (
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-2">Contraseña actual</label>
+                  <input
+                    type="password"
+                    value={passwordForm.currentPassword}
+                    onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
+                    className="input w-full"
+                    placeholder="Ingresa tu contraseña actual"
+                    disabled={passwordSaving}
+                  />
+                </div>
+              )}
 
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-2">Nueva contraseña</label>
