@@ -268,14 +268,7 @@ export default function Companion() {
               onClick={() => {
                 setShowChangePassword(true);
                 // Detectar si el usuario ha establecido una contraseña real (no solo la del Google Auth)
-                api.hasPassword().then(res => {
-                  console.log('hasPassword response:', res);
-                  console.log('passwordSetByUser value:', res.passwordSetByUser);
-                  setPasswordSetByUser(res.passwordSetByUser ?? true);
-                }).catch(err => {
-                  console.error('hasPassword error:', err);
-                  setPasswordSetByUser(true);
-                });
+                api.hasPassword().then(res => setPasswordSetByUser(res.passwordSetByUser ?? true)).catch(() => setPasswordSetByUser(true));
               }}
               className="flex items-center gap-2 text-sm btn-secondary py-1.5 px-3 whitespace-nowrap"
               title="Cambiar contraseña"
