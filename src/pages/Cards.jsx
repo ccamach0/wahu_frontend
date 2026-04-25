@@ -19,11 +19,17 @@ const CARD_COLORS = {
 export default function Cards() {
   const { firstPet } = useMyPets();
   const [cards, setCards] = useState([]);
+  const toast = useToast();
   const [loading, setLoading] = useState(true);
+  const toast = useToast();
   const [category, setCategory] = useState('Todas');
+  const toast = useToast();
   const [search, setSearch] = useState('');
+  const toast = useToast();
   const [showCreate, setShowCreate] = useState(false);
+  const toast = useToast();
   const [newCard, setNewCard] = useState({
+  const toast = useToast();
     name: '',
     category: 'Personalidad',
     card_type: 'simple',
@@ -33,8 +39,11 @@ export default function Cards() {
     value2_value: '',
   });
   const [voted, setVoted] = useState(new Set());
+  const toast = useToast();
   const [liked, setLiked] = useState(new Set());
+  const toast = useToast();
   const [added, setAdded] = useState(new Set());
+  const toast = useToast();
 
   const fetchCards = (params = {}) => {
     setLoading(true);

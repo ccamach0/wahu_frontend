@@ -12,8 +12,11 @@ export default function ClanMembersPanel({
   onMemberUpdated,
 }) {
   const [updating, setUpdating] = useState({});
+  const toast = useToast();
   const [selectedPetId, setSelectedPetId] = useState(null);
+  const toast = useToast();
   const [showRoleMenu, setShowRoleMenu] = useState(false);
+  const toast = useToast();
 
   const handlePromoteToModerator = async (petId) => {
     try {

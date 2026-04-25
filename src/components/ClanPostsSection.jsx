@@ -14,12 +14,19 @@ export default function ClanPostsSection({
   onContentUpdated,
 }) {
   const [posts, setPosts] = useState([]);
+  const toast = useToast();
   const [postText, setPostText] = useState('');
+  const toast = useToast();
   const [sendAsOwner, setSendAsOwner] = useState(false);
+  const toast = useToast();
   const [submitting, setSubmitting] = useState(false);
+  const toast = useToast();
   const [loading, setLoading] = useState(true);
+  const toast = useToast();
   const [expandedPost, setExpandedPost] = useState(null);
+  const toast = useToast();
   const [postComments, setPostComments] = useState({});
+  const toast = useToast();
 
   useEffect(() => {
     loadPosts();

@@ -20,14 +20,22 @@ export default function Pets() {
   const { user } = useAuth();
   const { activePet } = usePetContext();
   const [tab, setTab] = useState('pets'); // 'pets' | 'companions'
+  const toast = useToast();
   const [pets, setPets] = useState([]);
+  const toast = useToast();
   const [companions, setCompanions] = useState([]);
+  const toast = useToast();
   const [loading, setLoading] = useState(true);
+  const toast = useToast();
   // petId → 'sent' | 'friends'
   const [petStatuses, setPetStatuses] = useState({});
+  const toast = useToast();
   const [search, setSearch] = useState('');
+  const toast = useToast();
   const [showFilters, setShowFilters] = useState(false);
+  const toast = useToast();
   const [filters, setFilters] = useState({ species: '', min_level: '', max_level: '', sort: 'popularity' });
+  const toast = useToast();
 
   const fetchPets = useCallback((q = '', f = filters) => {
     setLoading(true);
