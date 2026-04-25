@@ -263,10 +263,14 @@ export default function Companion() {
       <div className="card p-6 mb-6">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 md:gap-0 mb-4">
           <h2 className="font-bold text-gray-800">Mi perfil</h2>
-          <div className="flex gap-2 w-full md:w-auto">
+          <div className="flex gap-2">
             <button
-              onClick={() => setShowChangePassword(true)}
-              className="flex items-center gap-2 flex-1 md:flex-none text-sm btn-secondary py-1.5 justify-center md:justify-start px-3"
+              onClick={() => {
+                setShowChangePassword(true);
+                // Detectar si el usuario tiene contraseña
+                api.hasPassword().then(res => setHasPassword(res.hasPassword)).catch(() => setHasPassword(true));
+              }}
+              className="flex items-center gap-2 text-sm btn-secondary py-1.5 px-3 whitespace-nowrap"
               title="Cambiar contraseña"
             >
               <Lock size={14} />
