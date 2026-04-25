@@ -91,7 +91,7 @@ export default function ClanProfile() {
         navigate('/clans');
       }
     } catch (err) {
-      alert(err.message || 'Error al procesar la acción');
+      toast.error(err.message || 'Error al procesar la acción');
       setConfirmAction(null);
     } finally {
       setIsProcessing(false);
@@ -100,16 +100,16 @@ export default function ClanProfile() {
 
   const handleJoinClan = async () => {
     if (!firstPet) {
-      alert('Necesitas una mascota para solicitar acceso al clan');
+      toast.error('Necesitas una mascota para solicitar acceso al clan');
       return;
     }
 
     try {
       await api.joinClan(clanId, firstPet.id);
-      alert('Solicitud de acceso enviada. Espera la aceptación de un moderador.');
+      toast.error('Solicitud de acceso enviada. Espera la aceptación de un moderador.');
       loadClan();
     } catch (err) {
-      alert(err.message || 'Error al solicitar acceso');
+      toast.error(err.message || 'Error al solicitar acceso');
     }
   };
 

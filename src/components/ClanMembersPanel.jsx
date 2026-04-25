@@ -1,3 +1,4 @@
+import { useToast } from '../hooks/useToast.jsx';
 import { useState } from 'react';
 import { Trash2, Shield, Users } from 'lucide-react';
 import api from '../services/api.js';
@@ -22,7 +23,7 @@ export default function ClanMembersPanel({
       setShowRoleMenu(false);
       onMemberUpdated();
     } catch (err) {
-      alert(err.message || 'Error al cambiar rol');
+      toast.error(err.message || 'Error al cambiar rol');
     } finally {
       setUpdating(prev => ({ ...prev, [petId]: false }));
     }
@@ -36,7 +37,7 @@ export default function ClanMembersPanel({
       setShowRoleMenu(false);
       onMemberUpdated();
     } catch (err) {
-      alert(err.message || 'Error al cambiar rol');
+      toast.error(err.message || 'Error al cambiar rol');
     } finally {
       setUpdating(prev => ({ ...prev, [petId]: false }));
     }
@@ -50,7 +51,7 @@ export default function ClanMembersPanel({
       await api.removeClanMember(clanId, petId);
       onMemberUpdated();
     } catch (err) {
-      alert(err.message || 'Error al eliminar miembro');
+      toast.error(err.message || 'Error al eliminar miembro');
     } finally {
       setUpdating(prev => ({ ...prev, [petId]: false }));
     }

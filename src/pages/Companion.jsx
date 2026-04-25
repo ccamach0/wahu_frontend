@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { User, Plus, PawPrint, Trash2, Star, ExternalLink, X, MessageSquare, Lock } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth.jsx';
 import { usePetContext } from '../hooks/usePetContext.jsx';
+import { useToast } from '../hooks/useToast.jsx';
 import ConfirmModal from '../components/ConfirmModal.jsx';
 import ImageUpload from '../components/ImageUpload.jsx';
 import Gallery from '../components/Gallery.jsx';
@@ -18,6 +19,7 @@ export default function Companion() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { pets, activePet, setActivePet, addPet, removePet, loading } = usePetContext();
+  const toast = useToast();
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ name: '', username: '', breed: '', species: 'Perro', location: '', bio: '', age: '', gender: 'Macho' });
   const [imageFile, setImageFile] = useState(null);
@@ -129,7 +131,7 @@ export default function Companion() {
       await api.deletePet(petToDelete.id);
       removePet(petToDelete.id);
     } catch (err) {
-      alert(err.message || 'Error al eliminar mascota');
+      toast.error(err.message || 'Error al eliminar mascota');
     } finally {
       setPetToDelete(null);
     }
@@ -149,7 +151,7 @@ export default function Companion() {
       setProfileImage(null);
       window.location.reload();
     } catch (err) {
-      alert(err.message || 'Error al actualizar perfil');
+      toast.error(err.message || 'Error al actualizar perfil');
     } finally {
       setProfileSaving(false);
     }
@@ -182,7 +184,7 @@ export default function Companion() {
     setPasswordSaving(true);
     try {
       await api.changePassword(passwordForm.currentPassword, passwordForm.newPassword);
-      alert('Contraseña cambiada exitosamente');
+      toast.success('Contraseña cambiada exitosamente');
       setShowChangePassword(false);
       setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
     } catch (err) {
@@ -200,7 +202,7 @@ export default function Companion() {
       setUserGallery([...userGallery, result]);
       setGalleryFile(null);
     } catch (err) {
-      alert(err.message || 'Error al subir foto');
+      toast.error(err.message || 'Error al subir foto');
     } finally {
       setUploadingUserGallery(false);
     }
@@ -211,7 +213,7 @@ export default function Companion() {
       await api.deleteCompanionGalleryImage(user.id, imageId);
       setUserGallery(userGallery.filter(img => img.id !== imageId));
     } catch (err) {
-      alert(err.message || 'Error al eliminar foto');
+      toast.error(err.message || 'Error al eliminar foto');
     }
   };
 
@@ -223,7 +225,7 @@ export default function Companion() {
         [petId]: [...(prev[petId] || []), tagName]
       }));
     } catch (err) {
-      alert(err.message || 'Error al agregar tag');
+      toast.error(err.message || 'Error al agregar tag');
     }
   };
 
@@ -235,7 +237,7 @@ export default function Companion() {
         [petId]: (prev[petId] || []).filter(t => t !== tagName)
       }));
     } catch (err) {
-      alert(err.message || 'Error al eliminar tag');
+      toast.error(err.message || 'Error al eliminar tag');
     }
   };
 
@@ -391,7 +393,7 @@ export default function Companion() {
                 [imageId]: [...(prev[imageId] || []), comment]
               }));
             } catch (err) {
-              alert(err.message || 'Error al crear comentario');
+              toast.error(err.message || 'Error al crear comentario');
             }
           }}
           onDeleteComment={async (imageId, commentId) => {
@@ -402,7 +404,7 @@ export default function Companion() {
                 [imageId]: prev[imageId].filter(c => c.id !== commentId)
               }));
             } catch {
-              alert('Error al eliminar comentario');
+              toast.error('Error al eliminar comentario');
             }
           }}
           firstPet={activePet}
@@ -603,7 +605,7 @@ export default function Companion() {
               const newPost = await api.createCompanionPost(user.id, content, sent_as_owner);
               setMyPosts([newPost, ...myPosts]);
             } catch (err) {
-              alert(err.message || 'Error al crear publicación');
+              toast.error(err.message || 'Error al crear publicación');
             }
           }}
           onDeletePost={async (postId) => {
@@ -612,7 +614,7 @@ export default function Companion() {
               await api.deleteCompanionPost(user.id, postId);
               setMyPosts(myPosts.filter(p => p.id !== postId));
             } catch {
-              alert('Error al eliminar publicación');
+              toast.error('Error al eliminar publicación');
             }
           }}
           onAddComment={async (postId, content, sent_as_owner) => {
@@ -620,7 +622,7 @@ export default function Companion() {
               const newComment = await api.createCompanionPostComment(user.id, postId, content, sent_as_owner);
               setMyPosts(myPosts.map(p => p.id === postId ? { ...p, comments: [...(p.comments || []), newComment] } : p));
             } catch (err) {
-              alert(err.message || 'Error al crear comentario');
+              toast.error(err.message || 'Error al crear comentario');
             }
           }}
           onDeleteComment={async (postId, commentId) => {
@@ -628,7 +630,7 @@ export default function Companion() {
               await api.deleteCompanionPostComment(user.id, postId, commentId);
               setMyPosts(myPosts.map(p => p.id === postId ? { ...p, comments: (p.comments || []).filter(c => c.id !== commentId) } : p));
             } catch {
-              alert('Error al eliminar comentario');
+              toast.error('Error al eliminar comentario');
             }
           }}
           firstPet={activePet}

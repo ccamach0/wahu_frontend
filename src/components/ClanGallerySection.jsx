@@ -1,3 +1,4 @@
+import { useToast } from '../hooks/useToast.jsx';
 import { useState, useEffect } from 'react';
 import { Upload, Trash2, MessageCircle, X } from 'lucide-react';
 import api from '../services/api.js';
@@ -11,6 +12,7 @@ export default function ClanGallerySection({
   isModerator,
   onContentUpdated,
 }) {
+  const toast = useToast();
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -44,7 +46,7 @@ export default function ClanGallerySection({
       setImages([newImage, ...images]);
       onContentUpdated?.();
     } catch (err) {
-      alert(err.message || 'Error al subir imagen');
+      toast.error(err.message || 'Error al subir imagen');
     } finally {
       setUploading(false);
     }
@@ -59,7 +61,7 @@ export default function ClanGallerySection({
       setSelectedImage(null);
       onContentUpdated?.();
     } catch (err) {
-      alert(err.message || 'Error al eliminar imagen');
+      toast.error(err.message || 'Error al eliminar imagen');
     }
   };
 
@@ -104,7 +106,7 @@ export default function ClanGallerySection({
       }));
       onContentUpdated?.();
     } catch (err) {
-      alert(err.message || 'Error al eliminar comentario');
+      toast.error(err.message || 'Error al eliminar comentario');
     }
   };
 
@@ -242,7 +244,7 @@ export default function ClanGallerySection({
                         );
                         input.value = '';
                       } catch (err) {
-                        alert(err.message);
+                        toast.error(err.message);
                       }
                     }
                   }}

@@ -1,3 +1,4 @@
+import { useToast } from '../hooks/useToast.jsx';
 import { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Trash2, User } from 'lucide-react';
 import api from '../services/api.js';
@@ -47,7 +48,7 @@ export default function ClanPostsSection({
       setPostText('');
       onContentUpdated?.();
     } catch (err) {
-      alert(err.message || 'Error al crear publicación');
+      toast.error(err.message || 'Error al crear publicación');
     } finally {
       setSubmitting(false);
     }
@@ -61,7 +62,7 @@ export default function ClanPostsSection({
       setPosts(posts.filter(p => p.id !== postId));
       onContentUpdated?.();
     } catch (err) {
-      alert(err.message || 'Error al eliminar publicación');
+      toast.error(err.message || 'Error al eliminar publicación');
     }
   };
 
@@ -91,7 +92,7 @@ export default function ClanPostsSection({
       }));
       onContentUpdated?.();
     } catch (err) {
-      alert(err.message || 'Error al eliminar comentario');
+      toast.error(err.message || 'Error al eliminar comentario');
     }
   };
 
@@ -251,7 +252,7 @@ export default function ClanPostsSection({
                           );
                           input.value = '';
                         } catch (err) {
-                          alert(err.message);
+                          toast.error(err.message);
                         }
                       }
                     }}

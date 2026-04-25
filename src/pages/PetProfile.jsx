@@ -1,3 +1,4 @@
+import { useToast } from '../hooks/useToast.jsx';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MapPin, Users, Star, ArrowLeft, PawPrint, Shield, X } from 'lucide-react';
@@ -136,7 +137,7 @@ export default function PetProfile() {
       await api.sendFriendRequest({ pet_id: firstPet.id, friend_id: pet.id });
       setStatus('sent');
     } catch (err) {
-      alert(err.message || 'Error al enviar solicitud');
+      toast.error(err.message || 'Error al enviar solicitud');
     } finally {
       setActionLoading(false);
     }
@@ -163,7 +164,7 @@ export default function PetProfile() {
       setGallery([...gallery, result]);
       setGalleryFile(null);
     } catch (err) {
-      alert(err.message || 'Error al subir foto');
+      toast.error(err.message || 'Error al subir foto');
     } finally {
       setUploadingGallery(false);
     }
@@ -180,7 +181,7 @@ export default function PetProfile() {
       setEditingAvatar(false);
       setAvatarFile(null);
     } catch (err) {
-      alert(err.message || 'Error al cambiar avatar');
+      toast.error(err.message || 'Error al cambiar avatar');
     } finally {
       setAvatarUploading(false);
     }
@@ -191,7 +192,7 @@ export default function PetProfile() {
       await api.deletePetGalleryImage(pet.id, imageId);
       setGallery(gallery.filter(img => img.id !== imageId));
     } catch (err) {
-      alert(err.message || 'Error al eliminar foto');
+      toast.error(err.message || 'Error al eliminar foto');
     }
   };
 
@@ -213,7 +214,7 @@ export default function PetProfile() {
       await api.addPetTag(pet.id, tagName);
       setTags([...tags, tagName]);
     } catch (err) {
-      alert(err.message || 'Error al agregar tag');
+      toast.error(err.message || 'Error al agregar tag');
     }
   };
 
@@ -223,7 +224,7 @@ export default function PetProfile() {
       await api.removePetTag(pet.id, tagName);
       setTags(tags.filter(t => t !== tagName));
     } catch (err) {
-      alert(err.message || 'Error al eliminar tag');
+      toast.error(err.message || 'Error al eliminar tag');
     }
   };
 
@@ -491,7 +492,7 @@ export default function PetProfile() {
                   [imageId]: [...(prev[imageId] || []), comment]
                 }));
               } catch (err) {
-                alert(err.message || 'Error al crear comentario');
+                toast.error(err.message || 'Error al crear comentario');
               }
             }}
             onDeleteComment={async (imageId, commentId) => {
@@ -502,7 +503,7 @@ export default function PetProfile() {
                   [imageId]: prev[imageId].filter(c => c.id !== commentId)
                 }));
               } catch {
-                alert('Error al eliminar comentario');
+                toast.error('Error al eliminar comentario');
               }
             }}
             firstPet={firstPet}
@@ -524,7 +525,7 @@ export default function PetProfile() {
               const newPost = await api.createPetPost(pet.id, content, sent_as_owner);
               setPosts([newPost, ...posts]);
             } catch (err) {
-              alert(err.message || 'Error al crear publicación');
+              toast.error(err.message || 'Error al crear publicación');
             }
           }}
           onDeletePost={async (postId) => {
@@ -533,7 +534,7 @@ export default function PetProfile() {
               await api.deletePetPost(pet.id, postId);
               setPosts(posts.filter(p => p.id !== postId));
             } catch {
-              alert('Error al eliminar publicación');
+              toast.error('Error al eliminar publicación');
             }
           }}
           onAddComment={async (postId, content, sent_as_owner) => {
@@ -541,7 +542,7 @@ export default function PetProfile() {
               const newComment = await api.createPetPostComment(pet.id, postId, content, sent_as_owner);
               setPosts(posts.map(p => p.id === postId ? { ...p, comments: [...(p.comments || []), newComment] } : p));
             } catch (err) {
-              alert(err.message || 'Error al crear comentario');
+              toast.error(err.message || 'Error al crear comentario');
             }
           }}
           onDeleteComment={async (postId, commentId) => {
@@ -549,7 +550,7 @@ export default function PetProfile() {
               await api.deletePetPostComment(pet.id, postId, commentId);
               setPosts(posts.map(p => p.id === postId ? { ...p, comments: (p.comments || []).filter(c => c.id !== commentId) } : p));
             } catch {
-              alert('Error al eliminar comentario');
+              toast.error('Error al eliminar comentario');
             }
           }}
           firstPet={firstPet}

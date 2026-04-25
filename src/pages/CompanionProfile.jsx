@@ -1,3 +1,4 @@
+import { useToast } from '../hooks/useToast.jsx';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Users, PawPrint, ArrowLeft, UserCheck, Clock, Check, PawPrint as PawIcon } from 'lucide-react';
@@ -133,7 +134,7 @@ export default function CompanionProfile() {
       await api.sendFriendRequest({ pet_id: firstPet.id, friend_id: pet.id });
       setStatuses(prev => ({ ...prev, [pet.id]: { status: 'sent', friendship_id: null } }));
     } catch (err) {
-      alert(err.message || 'Error al enviar solicitud');
+      toast.error(err.message || 'Error al enviar solicitud');
     } finally {
       setActionLoading(prev => ({ ...prev, [pet.id]: false }));
     }
@@ -304,7 +305,7 @@ export default function CompanionProfile() {
                   [imageId]: [...(prev[imageId] || []), comment]
                 }));
               } catch (err) {
-                alert(err.message || 'Error al crear comentario');
+                toast.error(err.message || 'Error al crear comentario');
               }
             }}
             onDeleteComment={async (imageId, commentId) => {
@@ -315,7 +316,7 @@ export default function CompanionProfile() {
                   [imageId]: prev[imageId].filter(c => c.id !== commentId)
                 }));
               } catch {
-                alert('Error al eliminar comentario');
+                toast.error('Error al eliminar comentario');
               }
             }}
             firstPet={firstPet}
@@ -337,7 +338,7 @@ export default function CompanionProfile() {
               const newPost = await api.createCompanionPost(companion.id, content, sent_as_owner);
               setPosts([newPost, ...posts]);
             } catch (err) {
-              alert(err.message || 'Error al crear publicación');
+              toast.error(err.message || 'Error al crear publicación');
             }
           }}
           onDeletePost={async (postId) => {
@@ -346,7 +347,7 @@ export default function CompanionProfile() {
               await api.deleteCompanionPost(companion.id, postId);
               setPosts(posts.filter(p => p.id !== postId));
             } catch {
-              alert('Error al eliminar publicación');
+              toast.error('Error al eliminar publicación');
             }
           }}
           onAddComment={async (postId, content, sent_as_owner) => {
@@ -354,7 +355,7 @@ export default function CompanionProfile() {
               const newComment = await api.createCompanionPostComment(companion.id, postId, content, sent_as_owner);
               setPosts(posts.map(p => p.id === postId ? { ...p, comments: [...(p.comments || []), newComment] } : p));
             } catch (err) {
-              alert(err.message || 'Error al crear comentario');
+              toast.error(err.message || 'Error al crear comentario');
             }
           }}
           onDeleteComment={async (postId, commentId) => {
@@ -362,7 +363,7 @@ export default function CompanionProfile() {
               await api.deleteCompanionPostComment(companion.id, postId, commentId);
               setPosts(posts.map(p => p.id === postId ? { ...p, comments: (p.comments || []).filter(c => c.id !== commentId) } : p));
             } catch {
-              alert('Error al eliminar comentario');
+              toast.error('Error al eliminar comentario');
             }
           }}
           firstPet={firstPet}

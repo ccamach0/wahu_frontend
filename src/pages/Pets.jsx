@@ -1,3 +1,4 @@
+import { useToast } from '../hooks/useToast.jsx';
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PawPrint, Search, Users, SlidersHorizontal, X } from 'lucide-react';
@@ -94,7 +95,7 @@ export default function Pets() {
 
   // Invitar a mascota a la jauría
   const handleInvite = async (pet) => {
-    if (!activePet) return alert('Selecciona una mascota activa primero');
+    if (!activePet) return toast.error('Selecciona una mascota activa primero');
     try {
       await api.sendFriendRequest({ pet_id: activePet.id, friend_id: pet.id });
       setPetStatuses(prev => ({ ...prev, [pet.id]: 'sent' }));
@@ -104,7 +105,7 @@ export default function Pets() {
       } else if (err.message?.includes('Solicitud ya enviada')) {
         setPetStatuses(prev => ({ ...prev, [pet.id]: 'sent' }));
       } else {
-        alert(err.message);
+        toast.error(err.message);
       }
     }
   };

@@ -1,3 +1,4 @@
+import { useToast } from '../hooks/useToast.jsx';
 import { useState, useEffect, useRef } from 'react';
 import { Send, User } from 'lucide-react';
 import api from '../services/api.js';
@@ -7,6 +8,7 @@ export default function ClanChatWidget({
   firstPet,
   user,
 }) {
+  const toast = useToast();
   const [messages, setMessages] = useState([]);
   const [messageText, setMessageText] = useState('');
   const [sendAsOwner, setSendAsOwner] = useState(false);
@@ -62,7 +64,7 @@ export default function ClanChatWidget({
       // Reset to sending as pet by default
       setSendAsOwner(false);
     } catch (err) {
-      alert(err.message || 'Error al enviar mensaje');
+      toast.error(err.message || 'Error al enviar mensaje');
     } finally {
       setSending(false);
     }

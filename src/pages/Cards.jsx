@@ -1,3 +1,4 @@
+import { useToast } from '../hooks/useToast.jsx';
 import { useState, useEffect } from 'react';
 import { Tag, Search, Shuffle, Plus } from 'lucide-react';
 import api from '../services/api.js';
@@ -113,7 +114,7 @@ export default function Cards() {
       });
       setShowCreate(false);
     } catch (err) {
-      alert(err.message || 'Error al crear tarjeta');
+      toast.error(err.message || 'Error al crear tarjeta');
     }
   };
 
