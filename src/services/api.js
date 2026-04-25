@@ -42,6 +42,7 @@ export const api = {
   verifyEmail: (token) => request(`/auth/verify/${token}`),
   resendVerification: (email) => request('/auth/resend-verification', { method: 'POST', body: JSON.stringify({ email }) }),
   setActivePet: (pet_id) => request('/auth/active-pet', { method: 'PUT', body: JSON.stringify({ pet_id }) }),
+  changePassword: (currentPassword, newPassword) => request('/auth/change-password', { method: 'PUT', body: JSON.stringify({ currentPassword, newPassword }) }),
 
   // Pets
   getPets: (params = {}) => {

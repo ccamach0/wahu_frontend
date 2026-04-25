@@ -37,6 +37,10 @@ export default function Companion() {
   const [loadingGalleryComments, setLoadingGalleryComments] = useState({});
   const [petTags, setPetTags] = useState({});
   const [expandedPetTags, setExpandedPetTags] = useState(null);
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordSaving, setPasswordSaving] = useState(false);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -150,6 +154,38 @@ export default function Companion() {
     }
   };
 
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    setPasswordError('');
+
+    if (!passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword) {
+      setPasswordError('Todos los campos son requeridos');
+      return;
+    }
+
+    if (passwordForm.newPassword.length < 6) {
+      setPasswordError('La nueva contraseña debe tener al menos 6 caracteres');
+      return;
+    }
+
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setPasswordError('Las contraseñas no coinciden');
+      return;
+    }
+
+    setPasswordSaving(true);
+    try {
+      await api.changePassword(passwordForm.currentPassword, passwordForm.newPassword);
+      alert('Contraseña cambiada exitosamente');
+      setShowChangePassword(false);
+      setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    } catch (err) {
+      setPasswordError(err.message || 'Error al cambiar contraseña');
+    } finally {
+      setPasswordSaving(false);
+    }
+  };
+
   const handleUploadUserGallery = async () => {
     if (!galleryFile || !user) return;
     setUploadingUserGallery(true);
@@ -221,15 +257,24 @@ export default function Companion() {
       <div className="card p-6 mb-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-bold text-gray-800">Mi perfil</h2>
-          <button
-            onClick={() => {
-              setEditingProfile(!editingProfile);
-              setProfileForm({ name: user?.name || '', bio: user?.bio || '' });
-            }}
-            className="text-sm btn-secondary py-1.5"
-          >
-            {editingProfile ? BUTTON_TEXT.CANCEL : 'Editar'}
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowChangePassword(true)}
+              className="text-sm btn-secondary py-1.5"
+              title="Cambiar contraseña"
+            >
+              🔒 Contraseña
+            </button>
+            <button
+              onClick={() => {
+                setEditingProfile(!editingProfile);
+                setProfileForm({ name: user?.name || '', bio: user?.bio || '' });
+              }}
+              className="text-sm btn-secondary py-1.5"
+            >
+              {editingProfile ? BUTTON_TEXT.CANCEL : 'Editar'}
+            </button>
+          </div>
         </div>
 
         {!editingProfile ? (
@@ -581,6 +626,83 @@ export default function Companion() {
           isProfileOwner={true}
         />
       </div>
+
+      {/* Modal de cambiar contraseña */}
+      {showChangePassword && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-sm w-full animate-in scale-in-95 duration-200">
+            <div className="p-6 border-b border-gray-200">
+              <h2 className="text-lg font-bold text-gray-900">Cambiar contraseña</h2>
+            </div>
+
+            <form onSubmit={handleChangePassword} className="p-6 space-y-4">
+              {passwordError && (
+                <div className="bg-red-50 border border-red-200 rounded-lg px-3 py-2.5 text-sm text-red-700">
+                  {passwordError}
+                </div>
+              )}
+
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-2">Contraseña actual</label>
+                <input
+                  type="password"
+                  value={passwordForm.currentPassword}
+                  onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
+                  className="input w-full"
+                  placeholder="Ingresa tu contraseña actual"
+                  disabled={passwordSaving}
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-2">Nueva contraseña</label>
+                <input
+                  type="password"
+                  value={passwordForm.newPassword}
+                  onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                  className="input w-full"
+                  placeholder="Ingresa tu nueva contraseña"
+                  disabled={passwordSaving}
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-2">Confirmar nueva contraseña</label>
+                <input
+                  type="password"
+                  value={passwordForm.confirmPassword}
+                  onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                  className="input w-full"
+                  placeholder="Confirma tu nueva contraseña"
+                  disabled={passwordSaving}
+                />
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowChangePassword(false);
+                    setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+                    setPasswordError('');
+                  }}
+                  disabled={passwordSaving}
+                  className="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors disabled:opacity-50"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={passwordSaving}
+                  className="flex-1 px-4 py-2.5 bg-wahu-500 hover:bg-wahu-600 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
+                >
+                  {passwordSaving ? 'Guardando...' : 'Cambiar'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
