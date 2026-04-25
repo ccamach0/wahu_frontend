@@ -41,7 +41,7 @@ export default function Companion() {
   const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [passwordError, setPasswordError] = useState('');
   const [passwordSaving, setPasswordSaving] = useState(false);
-  const [hasPassword, setHasPassword] = useState(true); // Asumir que tiene contraseña por defecto
+  const [passwordSetByUser, setPasswordSetByUser] = useState(true); // Asumir que tiene contraseña real por defecto
 
   useEffect(() => {
     if (!user?.id) return;
@@ -159,7 +159,7 @@ export default function Companion() {
     e.preventDefault();
     setPasswordError('');
 
-    if (hasPassword && !passwordForm.currentPassword) {
+    if (passwordSetByUser && !passwordForm.currentPassword) {
       setPasswordError('La contraseña actual es requerida');
       return;
     }
@@ -267,8 +267,15 @@ export default function Companion() {
             <button
               onClick={() => {
                 setShowChangePassword(true);
-                // Detectar si el usuario tiene contraseña
-                api.hasPassword().then(res => setHasPassword(res.hasPassword)).catch(() => setHasPassword(true));
+                // Detectar si el usuario ha establecido una contraseña real (no solo la del Google Auth)
+                api.hasPassword().then(res => {
+                  console.log('hasPassword response:', res);
+                  console.log('passwordSetByUser value:', res.passwordSetByUser);
+                  setPasswordSetByUser(res.passwordSetByUser ?? true);
+                }).catch(err => {
+                  console.error('hasPassword error:', err);
+                  setPasswordSetByUser(true);
+                });
               }}
               className="flex items-center gap-2 text-sm btn-secondary py-1.5 px-3 whitespace-nowrap"
               title="Cambiar contraseña"
@@ -653,13 +660,13 @@ export default function Companion() {
                 </div>
               )}
 
-              {!hasPassword && (
+              {!passwordSetByUser && (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg px-3 py-2.5 text-xs text-blue-700">
                   Nota: Te registraste con Google Auth. Solo necesitas establecer una contraseña nueva.
                 </div>
               )}
 
-              {hasPassword && (
+              {passwordSetByUser && (
                 <div>
                   <label className="block text-xs font-medium text-gray-600 mb-2">Contraseña actual</label>
                   <input
