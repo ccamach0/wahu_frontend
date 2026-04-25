@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import api from '../services/api.js';
 
-const DEMO_USER = { id: 'demo', username: 'ana_garcia', name: 'Ana García', email: 'ana@wahu.com', croquetas: 150 };
+const DEMO_USER = { id: '550e8400-e29b-41d4-a716-446655440000', username: 'ana_garcia', name: 'Ana García', email: 'ana@wahu.com', croquetas: 150 };
 
 const defaultContext = {
   user: null,
@@ -23,13 +23,7 @@ export const AuthProvider = ({ children }) => {
     if (token) {
       api.me()
         .then(setUser)
-        .catch(() => {
-          if (token === 'demo_token') {
-            setUser(DEMO_USER);
-          } else {
-            localStorage.removeItem('wahu_token');
-          }
-        })
+        .catch(() => localStorage.removeItem('wahu_token'))
         .finally(() => setLoading(false));
     } else {
       setLoading(false);
@@ -37,20 +31,10 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
-    try {
-      const { token, user } = await api.login({ email, password });
-      localStorage.setItem('wahu_token', token);
-      setUser(user);
-      return user;
-    } catch (err) {
-      // Demo mode fallback
-      if (email === 'ana@wahu.com' && password === 'password123') {
-        localStorage.setItem('wahu_token', 'demo_token');
-        setUser(DEMO_USER);
-        return DEMO_USER;
-      }
-      throw err;
-    }
+    const { token, user } = await api.login({ email, password });
+    localStorage.setItem('wahu_token', token);
+    setUser(user);
+    return user;
   };
 
   const loginWithGoogle = async (accessToken) => {
@@ -60,17 +44,6 @@ export const AuthProvider = ({ children }) => {
       setUser(user);
       return user;
     } catch {
-      // Demo fallback: obtener info básica de Google sin backend
-      try {
-        const res = await fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${accessToken}`);
-        if (res.ok) {
-          const { name, email, picture } = await res.json();
-          const demoUser = { id: 'google_demo', username: email.split('@')[0], name, email, avatar_url: picture, croquetas: 0 };
-          localStorage.setItem('wahu_token', 'demo_token');
-          setUser(demoUser);
-          return demoUser;
-        }
-      } catch {}
       throw new Error('No se pudo conectar al servidor');
     }
   };

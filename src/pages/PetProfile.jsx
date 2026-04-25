@@ -23,7 +23,6 @@ function useFriendStatus(firstPet, petId) {
   const [status, setStatus] = useState('loading');
   const toast = useToast();
   const [friendshipId, setFriendshipId] = useState(null);
-  const toast = useToast();
 
   useEffect(() => {
     if (!firstPet || !petId || firstPet.id === petId) { setStatus('none'); return; }
@@ -56,35 +55,20 @@ export default function PetProfile() {
   const [pet, setPet] = useState(null);
   const toast = useToast();
   const [loading, setLoading] = useState(true);
-  const toast = useToast();
   const [actionLoading, setActionLoading] = useState(false);
-  const toast = useToast();
   const [gallery, setGallery] = useState([]);
-  const toast = useToast();
   const [galleryLoading, setGalleryLoading] = useState(false);
-  const toast = useToast();
   const [uploadingGallery, setUploadingGallery] = useState(false);
-  const toast = useToast();
   const [galleryFile, setGalleryFile] = useState(null);
-  const toast = useToast();
   const [editingAvatar, setEditingAvatar] = useState(false);
-  const toast = useToast();
   const [avatarFile, setAvatarFile] = useState(null);
-  const toast = useToast();
   const [avatarUploading, setAvatarUploading] = useState(false);
-  const toast = useToast();
   const [posts, setPosts] = useState([]);
-  const toast = useToast();
   const [postsLoading, setPostsLoading] = useState(false);
-  const toast = useToast();
   const [imageComments, setImageComments] = useState({});
-  const toast = useToast();
   const [loadingComments, setLoadingComments] = useState({});
-  const toast = useToast();
   const [tags, setTags] = useState([]);
-  const toast = useToast();
   const [tagsLoading, setTagsLoading] = useState(false);
-  const toast = useToast();
 
   useEffect(() => {
     api.getPet(username)

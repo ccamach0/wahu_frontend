@@ -13,7 +13,6 @@ function useFriendshipStatus(activePet, companionPets) {
   const [statuses, setStatuses] = useState({});
   const toast = useToast();
   const [loading, setLoading] = useState(false);
-  const toast = useToast();
 
   useEffect(() => {
     if (!activePet || !companionPets.length) return;
@@ -58,21 +57,13 @@ export default function CompanionProfile() {
   const [companion, setCompanion] = useState(null);
   const toast = useToast();
   const [pageLoading, setPageLoading] = useState(true);
-  const toast = useToast();
   const [actionLoading, setActionLoading] = useState({});
-  const toast = useToast();
   const [posts, setPosts] = useState([]);
-  const toast = useToast();
   const [postsLoading, setPostsLoading] = useState(false);
-  const toast = useToast();
   const [gallery, setGallery] = useState([]);
-  const toast = useToast();
   const [galleryLoading, setGalleryLoading] = useState(false);
-  const toast = useToast();
   const [galleryComments, setGalleryComments] = useState({});
-  const toast = useToast();
   const [loadingGalleryComments, setLoadingGalleryComments] = useState({});
-  const toast = useToast();
 
   useEffect(() => {
     api.getCompanionProfile(username)
